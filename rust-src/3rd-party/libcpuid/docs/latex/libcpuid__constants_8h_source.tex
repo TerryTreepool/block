@@ -1,0 +1,60 @@
+\doxysection{libcpuid\+\_\+constants.\+h}
+\label{libcpuid__constants_8h_source}\index{libcpuid/libcpuid\_constants.h@{libcpuid/libcpuid\_constants.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ 2008\ \ Veselin\ Georgiev,}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ anrieffNOSPAM\ @\ mgail\_DOT.com\ (convert\ to\ gmail)}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ are\ met:}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ 1.\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ 2.\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above\ copyright}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer\ in\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ \ \ \ documentation\ and/or\ other\ materials\ provided\ with\ the\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ AUTHOR\ \`{}\`{}AS\ IS''\ AND\ ANY\ EXPRESS\ OR}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ IN\ NO\ EVENT\ SHALL\ THE\ AUTHOR\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ INCIDENTAL,\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ NOT\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE\ OF}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#ifndef\ \_\_LIBCPUID\_CONSTANTS\_H\_\_}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ \_\_LIBCPUID\_CONSTANTS\_H\_\_}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ VENDOR\_STR\_MAX\ \ \ \ \ \ \ \ \ \ 16}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ BRAND\_STR\_MAX\ \ \ \ \ \ \ \ \ \ \ 64}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ CODENAME\_STR\_MAX\ \ \ \ \ \ \ \ 64}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ CPU\_FLAGS\_MAX\ \ \ \ \ \ \ \ \ \ \ 128}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ MAX\_CPUID\_LEVEL\ \ \ \ \ \ \ \ \ 32}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ MAX\_EXT\_CPUID\_LEVEL\ \ \ \ \ 32}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ MAX\_INTELFN4\_LEVEL\ \ \ \ \ \ 8}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ MAX\_INTELFN11\_LEVEL\ \ \ \ \ 4}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ MAX\_INTELFN12H\_LEVEL\ \ \ \ 4}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#define\ MAX\_INTELFN14H\_LEVEL\ \ \ \ 4}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#define\ MAX\_AMDFN8000001DH\_LEVEL\ 4}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#define\ CPU\_HINTS\_MAX\ \ \ \ \ \ \ \ \ \ \ 16}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#define\ SGX\_FLAGS\_MAX\ \ \ \ \ \ \ \ \ \ \ 14}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#define\ ADDRESS\_EXT\_CPUID\_START\ 0x80000000}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#define\ ADDRESS\_EXT\_CPUID\_END\ \ \ ADDRESS\_EXT\_CPUID\_START\ +\ MAX\_EXT\_CPUID\_LEVEL}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ EAX,}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ EBX,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ ECX,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ EDX,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ termination:\ */}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ NUM\_REGS,}
+\DoxyCodeLine{00058\ \}\ cpu\_registers\_t;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_\_LIBCPUID\_CONSTANTS\_H\_\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

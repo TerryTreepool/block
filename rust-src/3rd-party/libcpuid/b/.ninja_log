@@ -1,0 +1,16 @@
+# ninja log v5
+10	266	723731770	libcpuid/CMakeFiles/cpuid.dir/recog_intel.c.obj	9bf89087a35986e7
+17	270	723731770	libcpuid/CMakeFiles/cpuid.dir/recog_centaur.c.obj	9fd133cdacd7264c
+267	370	723731770	libcpuid/CMakeFiles/cpuid.dir/asm-bits.c.obj	1102d99007d31894
+270	377	723731770	libcpuid/CMakeFiles/cpuid.dir/msrdriver.c.obj	9959a1e96b1a76c7
+7	381	723731770	libcpuid/CMakeFiles/cpuid.dir/libcpuid_util.c.obj	23d967c07499d6ee
+0	385	723731770	libcpuid/CMakeFiles/cpuid.dir/recog_amd.c.obj	35ac98f106aa3822
+382	573	723731771	cpuid_tool/CMakeFiles/cpuid_tool.dir/cpuid_tool.c.obj	12ab644d2f01aac9
+377	706	0	libcpuid/CMakeFiles/docs	d6be3c0c07a19496
+377	706	0	D:/p/near/rust-src/3rd-party/libcpuid/b/libcpuid/CMakeFiles/docs	d6be3c0c07a19496
+22	2975	723731773	libcpuid/CMakeFiles/cpuid.dir/rdtsc.c.obj	917a78eceddf7b79
+371	3010	723731773	libcpuid/CMakeFiles/cpuid.dir/rdmsr.c.obj	4e99ccd8e6ea4481
+4	3069	723731773	libcpuid/CMakeFiles/cpuid.dir/cpuid_main.c.obj	5a86e7236cab3908
+3070	3240	723731773	libcpuid/libcpuid.dll	bd15ee0825ff5741
+3070	3240	723731773	libcpuid/libcpuid.dll.a	bd15ee0825ff5741
+3241	3337	723731773	cpuid_tool/cpuid_tool.exe	dd43b420fb472841

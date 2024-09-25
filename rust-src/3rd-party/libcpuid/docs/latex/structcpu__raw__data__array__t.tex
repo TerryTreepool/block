@@ -1,0 +1,56 @@
+\doxysection{cpu\+\_\+raw\+\_\+data\+\_\+array\+\_\+t Struct Reference}
+\label{structcpu__raw__data__array__t}\index{cpu\_raw\_data\_array\_t@{cpu\_raw\_data\_array\_t}}
+
+
+Contains an array of raw CPUID data.  
+
+
+
+
+{\ttfamily \#include $<$libcpuid.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+bool \textbf{ with\+\_\+affinity}
+\item 
+logical\+\_\+cpu\+\_\+t \textbf{ num\+\_\+raw}
+\item 
+struct \textbf{ cpu\+\_\+raw\+\_\+data\+\_\+t} $\ast$ \textbf{ raw}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Contains an array of raw CPUID data. 
+
+This contains one \doxyref{cpu\+\_\+raw\+\_\+data\+\_\+t}{p.}{structcpu__raw__data__t} for each logical CPU.
+
+\begin{DoxyNote}{Note}
+There is a hard limit of raw array\+: it is bounded by the logical\+\_\+cpu\+\_\+t type. In other words, the limit is 65536 logical CPUs in the system. 
+\end{DoxyNote}
+
+
+\doxysubsection{Field Documentation}
+\label{structcpu__raw__data__array__t_a04defb81241588612f040b1063841c77} 
+\index{cpu\_raw\_data\_array\_t@{cpu\_raw\_data\_array\_t}!num\_raw@{num\_raw}}
+\index{num\_raw@{num\_raw}!cpu\_raw\_data\_array\_t@{cpu\_raw\_data\_array\_t}}
+\doxysubsubsection{num\_raw}
+{\footnotesize\ttfamily logical\+\_\+cpu\+\_\+t cpu\+\_\+raw\+\_\+data\+\_\+array\+\_\+t\+::num\+\_\+raw}
+
+\doxyref{raw}{p.}{structcpu__raw__data__array__t_a0a0bda19633ffbb8c779d15f15f5a894} length \label{structcpu__raw__data__array__t_a0a0bda19633ffbb8c779d15f15f5a894} 
+\index{cpu\_raw\_data\_array\_t@{cpu\_raw\_data\_array\_t}!raw@{raw}}
+\index{raw@{raw}!cpu\_raw\_data\_array\_t@{cpu\_raw\_data\_array\_t}}
+\doxysubsubsection{raw}
+{\footnotesize\ttfamily struct \textbf{ cpu\+\_\+raw\+\_\+data\+\_\+t}$\ast$ cpu\+\_\+raw\+\_\+data\+\_\+array\+\_\+t\+::raw}
+
+array of raw CPUID data \label{structcpu__raw__data__array__t_afcda9cdabd191b53137719accea9316b} 
+\index{cpu\_raw\_data\_array\_t@{cpu\_raw\_data\_array\_t}!with\_affinity@{with\_affinity}}
+\index{with\_affinity@{with\_affinity}!cpu\_raw\_data\_array\_t@{cpu\_raw\_data\_array\_t}}
+\doxysubsubsection{with\_affinity}
+{\footnotesize\ttfamily bool cpu\+\_\+raw\+\_\+data\+\_\+array\+\_\+t\+::with\+\_\+affinity}
+
+Indicates if \doxyref{raw}{p.}{structcpu__raw__data__array__t_a0a0bda19633ffbb8c779d15f15f5a894} was obtained by using CPU affinity if false, \doxyref{raw}{p.}{structcpu__raw__data__array__t_a0a0bda19633ffbb8c779d15f15f5a894} contains a single data from an old dump (versions 0.\+5.\+1 and below). if true, \doxyref{raw}{p.}{structcpu__raw__data__array__t_a0a0bda19633ffbb8c779d15f15f5a894} contains data from a new dump (versions 0.\+6.\+0 and above). if true and if \doxyref{num\+\_\+raw}{p.}{structcpu__raw__data__array__t_a04defb81241588612f040b1063841c77} is 1, it indicates only one logical core was detected on the system. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+libcpuid/\textbf{ libcpuid.\+h}\end{DoxyCompactItemize}

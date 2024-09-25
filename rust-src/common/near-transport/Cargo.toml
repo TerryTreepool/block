@@ -1,0 +1,36 @@
+[package]
+name = "near-transport"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+log = { workspace = true }
+near-base = { path = "../near-base" }
+near-util = { path = "../near-util" }
+near-core = { path = "../near-core" }
+libc = { workspace = true }
+async-std = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+once_cell = { workspace = true }
+generic-array = { workspace = true }
+winapi = { workspace = true }
+lazy_static = { workspace = true }
+rand = { workspace = true }
+num_cpus = { workspace = true }
+
+[dependencies.crossbeam]
+version = "0.8.1"
+
+[lib]
+# 库名， 默认项目名称
+# name = "near-base"
+
+# 构建目标
+# dylib -> 动态库
+# rlib -> r库
+# staticlib -> 静态库
+crate-type = ["rlib"]

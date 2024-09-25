@@ -1,0 +1,35 @@
+[package]
+name = "near-base"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# sha2 = { path = "../../3rd-party/sha2" }
+async-std = { workspace = true }
+async-trait = { workspace = true }
+generic-array = { workspace = true }
+hex = { workspace = true }
+base58 = { workspace = true }
+futures = { workspace = true }
+libc = { workspace = true }
+sha2 = { workspace = true }
+
+rand = "0.7.3"
+rsa = "0.3.0"
+rsa-export = "0.1.2"
+cbc = "0.1.2"
+aes = "0.8.4"
+# rust-crypto = "0.2"
+# sha3 = "0.10.6"
+
+[lib]
+# 库名， 默认项目名称
+# name = "near_base"
+
+# 构建目标
+# dylib -> 动态库
+# rlib -> r库
+# staticlib -> 静态库
+crate-type = ["rlib"]

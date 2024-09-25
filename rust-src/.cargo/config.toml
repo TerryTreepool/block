@@ -1,0 +1,8 @@
+
+[target.aarch64-linux-android]
+linker = "E:\\m\\NDK\\arm64\\bin\\aarch64-linux-android-clang.cmd"
+# rustflags = ["-C", "linker-flavor=ld.lld"]
+
+[target.armv7-linux-androideabi]
+linker = "E:\\m\\NDK\\arm\\bin\\arm-linux-androideabi-clang.cmd"
+

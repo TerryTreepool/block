@@ -1,0 +1,34 @@
+[package]
+name = "hci-service-e"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = { workspace = true }
+near-base = { path = "../../common/near-base" }
+near-core = { path = "../../common/near-core" }
+near-transport = { path = "../../common/near-transport" }
+near-util = { path = "../../common/near-util" }
+
+base = { path = "../../libsrc/base" }
+common = { path = "../../libsrc/common" }
+topic-util = { path = "../../libsrc/topic-util" }
+protos = { path = "../../libsrc/protos" }
+
+lazy_static = { workspace = true }
+async-std = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+enumflags2 = { workspace = true }
+once_cell = { workspace = true }
+hex = { workspace = true }
+mac_address = { workspace = true }
+toml = { workspace = true }
+instant = { workspace = true }
+
+rlua = "0.19.4"
+
+[target.'cfg(any(target_os="linux", target_os="macos"))'.dependencies]
+bluex = { path = "../../3rd-party/bluex" }

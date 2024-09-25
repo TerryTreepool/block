@@ -1,0 +1,184 @@
+
+use std::pin::Pin;
+use std::sync::{Arc, RwLock};
+use std::collections::{BTreeMap, btree_map::Entry};
+
+use futures::Future;
+use near_base::{NearResult, NearError, ErrorCode};
+
+pub trait ItemTrait: Send + Sync + Clone {
+    fn get_item_id(&self) -> &str;
+}
+
+pub trait UpdateItemTrait<O> { 
+    fn update_item(&mut self, context: O);
+}
+
+pub trait UpdateItemTrait_V2<O, P, R> 
+where R: Future<Output = NearResult<()>> {
+    fn insert_item<CB: UpdateItemTrait_V2_CB<P, R> + Send + Sync>(&mut self, context: O, cb: CB) -> NearResult<R>;
+    fn update_item<CB: UpdateItemTrait_V2_CB<P, R> + Send + Sync>(&mut self, context: O, cb: CB) -> NearResult<R>;
+}
+
+#[async_trait::async_trait]
+pub trait UpdateItemTrait_V2_CB<P, R>: Send + Sync
+where R: Future<Output = NearResult<()>> {
+    fn call(&mut self, p: P) -> NearResult<R>;
+}
+
+#[async_trait::async_trait]
+impl<P, R, F> UpdateItemTrait_V2_CB<P, R> for F
+where
+    R: Future<Output = NearResult<()>>,
+    F: Send + Sync + 'static + FnMut(P) -> NearResult<R>,
+{
+    fn call(&mut self, p: P) -> NearResult<R> {
+        (self)(p)
+    }
+}
+
+
+pub trait CheckTrait{
+    fn check_status(&self) -> NearResult<()>;
+}
+
+struct Components<T> {
+    array: Vec<Arc<T>>,
+    array_mapping: BTreeMap<String, Arc<T>>,
+}
+
+struct ManagerImpl<T> {
+    components: RwLock<Components<T>>,
+}
+
+#[derive(Clone)]
+pub struct Manager<T>(Arc<ManagerImpl<T>>);
+
+impl<T> Manager<T> {
+    pub fn new() -> Self {
+        Self(Arc::new(ManagerImpl {
+            components: RwLock::new(Components {
+                                        array: vec![], 
+                                        array_mapping: BTreeMap::new(),
+            })
+        }))
+    }
+}
+
+impl<T: ItemTrait + UpdateItemTrait<T>> Manager<T> {
+
+    pub(crate) fn add_items<K: Into<T>>(&self, items: impl Iterator<Item = K>) {
+
+        let mut_components = &mut *self.0.components.write().unwrap();
+    
+        for item in items {
+            let item = item.into();
+            let id = item.get_item_id().into();
+
+            if let Entry::Vacant(empty) = mut_components.array_mapping.entry(id) {
+                let item_ptr = Arc::new(item);
+                mut_components.array.push(item_ptr.clone());
+                empty.insert(item_ptr);
+            }
+        }
+    
+    }
+
+    pub(crate) fn get_item(&self, id: &str) -> Option<T> {
+        self.0.components
+            .read()
+            .unwrap()
+            .array_mapping
+            .get(id)
+            .map(| item | {
+                item.as_ref().clone()
+            })
+    }
+
+    pub(crate) fn get_item_ptr(&self, id: &str) -> Option<Arc<T>> {
+        self.0.components
+            .read()
+            .unwrap()
+            .array_mapping
+            .get(id)
+            .map(| item | {
+                item.clone()
+            })
+    }
+
+    pub(crate) fn get_all_item(&self) -> Vec<T> {
+        let mut array = vec![];
+
+        self.0.components
+            .read()
+            .unwrap()
+            .array
+            .iter()
+            .for_each(| a | {
+                array.push(a.as_ref().clone());
+            });
+
+        array
+    }
+
+    pub(crate) fn exist(&self, id: &str) -> bool {
+        self.0.components
+            .read()
+            .unwrap()
+            .array_mapping
+            .get(id)
+            .map_or(false, |_| true)
+    }
+
+    pub(crate) fn update_item(&self, new_item: T) -> bool {
+        self.0.components
+            .write().unwrap()
+            .array_mapping
+            .get(new_item.get_item_id())
+            .map(| item | {
+                let mut_item = unsafe { &mut *(Arc::as_ptr(item) as *mut T) };
+                mut_item.update_item(new_item);
+                true
+            })
+            .map_or(false, | v | v)
+    }
+}
+
+pub trait UpdateItemTrait2<O, P, R>
+where R: Future<Output = NearResult<()>> {
+    fn insert_item_v2(&self, id: &str, context: O, cb: impl UpdateItemTrait_V2_CB<P, R>) -> NearResult<R>;
+    fn update_item_v2(&self, id: &str, context: O, cb: impl UpdateItemTrait_V2_CB<P, R>) -> NearResult<R>;
+} 
+
+impl<T: UpdateItemTrait_V2<O, P, R>, O, P, R> UpdateItemTrait2<O, P, R> for Manager<T> 
+where R: Future<Output = NearResult<()>> {
+    fn insert_item_v2(&self, id: &str, context: O, cb: impl UpdateItemTrait_V2_CB<P, R>) -> NearResult<R> {
+        let r = 
+        self.0.components
+            .write().unwrap()
+            .array_mapping
+            .get_mut(id)
+            .map(| item | {
+                let mut_item = unsafe { &mut *(Arc::as_ptr(item) as *mut T) };
+                mut_item.insert_item(context, cb)
+            })
+            .ok_or_else(|| NearError::new(ErrorCode::NEAR_ERROR_NOTFOUND, format!("[{id}] not found.")) )?;
+
+        r
+    }
+
+    fn update_item_v2(&self, id: &str, context: O, cb: impl UpdateItemTrait_V2_CB<P, R>) -> NearResult<R> {
+        let r = 
+        self.0.components
+            .write().unwrap()
+            .array_mapping
+            .get_mut(id)
+            .map(| item | {
+                let mut_item = unsafe { &mut *(Arc::as_ptr(item) as *mut T) };
+                mut_item.update_item(context, cb)
+            })
+            .ok_or_else(|| NearError::new(ErrorCode::NEAR_ERROR_NOTFOUND, format!("[{id}] not found.")) )?;
+
+        r
+    }
+}

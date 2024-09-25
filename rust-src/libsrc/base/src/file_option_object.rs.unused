@@ -1,0 +1,154 @@
+
+use near_base::{NamedObjectDesc, NamedObjectBody, NamedObject, Serialize, Deserialize, ObjectBuilder, NearResult, ObjectBodyTrait, ObjectTypeCode, ObjectDescTrait, ObjectId, Area, PublicKey, };
+use near_transport::ItfTrait;
+
+pub type FileOptionObjectDesc<T> = NamedObjectDesc<FileOptionObjectDescContent<T>>;
+pub type FileOptionObjectBody = NamedObjectBody<FileOptionObjectBodyContent>;
+pub type FileOptionObjectBuilder<T> = ObjectBuilder<FileOptionObjectDescContent<T>, FileOptionObjectBodyContent>;
+pub type FileOptionObject<T> = NamedObject<FileOptionObjectDescContent<T>, FileOptionObjectBodyContent>;
+
+#[derive(Clone, Default)]
+pub struct FileOptionObjectDescContent<T> {
+    pub(crate) version: u8,
+    pub(crate) data: T,
+}
+
+impl<T> FileOptionObjectDescContent<T> {
+
+    pub fn set_version(mut self, version: u8) -> Self {
+        self.version = version;
+        self
+    }
+
+    pub fn set_with_data(mut self, data: T) -> Self {
+        self.data = data;
+        self
+    }
+
+    #[inline]
+    pub fn version(&self) -> u8 {
+        self.version
+    }
+
+    #[inline]
+    pub fn data(&self) -> &T {
+        &self.data
+    }
+
+}
+
+impl<T: std::fmt::Display> std::fmt::Display for FileOptionObjectDescContent<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "file-option-desc: {{version: {}, data: {}}}", self.version(), self.data)
+    }
+}
+
+impl<T: Serialize> Serialize for FileOptionObjectDescContent<T> {
+    fn raw_capacity(&self) -> usize {
+        self.version.raw_capacity() + 
+        self.data.raw_capacity()
+    }
+
+    fn serialize<'a>(&self,
+                     buf: &'a mut [u8]) -> near_base::NearResult<&'a mut [u8]> {
+        let buf = self.version.serialize(buf)?;
+        let buf = self.data.serialize(buf)?;
+
+        Ok(buf)
+    }
+}
+
+impl<T: Deserialize> Deserialize for FileOptionObjectDescContent<T> {
+    fn deserialize<'de>(buf: &'de [u8]) -> near_base::NearResult<(Self, &'de [u8])> {
+        let (version, buf) = u8::deserialize(buf)?;
+        let (data, buf) = T::deserialize(buf)?;
+
+        Ok((Self{
+            version, data
+        }, buf))
+    }
+}
+
+#[derive(Clone)]
+pub struct FileOptionObjectGuard<T: Clone + std::fmt::Display + Serialize + Deserialize>(FileOptionObject<T>);
+
+impl<T: Serialize + Deserialize + std::fmt::Display + Clone> std::ops::Deref for FileOptionObjectGuard<T> {
+    type Target = FileOptionObject<T>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T: Serialize + Deserialize + Sync + Send + std::fmt::Display + Clone + 'static> ItfTrait for FileOptionObjectGuard<T> {}
+
+impl<T: Serialize + Deserialize + Clone + std::fmt::Display> Serialize for FileOptionObjectGuard<T> {
+    fn raw_capacity(&self) -> usize {
+        self.0.raw_capacity()
+    }
+
+    fn serialize<'a>(&self,
+                     buf: &'a mut [u8]) -> NearResult<&'a mut [u8]> {
+        self.0.serialize(buf)
+    }
+}
+
+impl<T: Serialize + Deserialize + Clone + std::fmt::Display> Deserialize for FileOptionObjectGuard<T> {
+    fn deserialize<'de>(buf: &'de [u8]) -> NearResult<(Self, &'de [u8])> {
+        let (r, buf) = FileOptionObject::deserialize(buf)?;
+
+        Ok((Self(r), buf))
+    }
+}
+
+impl<T: Serialize + Deserialize + Clone + std::fmt::Display> From<FileOptionObject<T>> for FileOptionObjectGuard<T> {
+    fn from(value: FileOptionObject<T>) -> Self {
+        Self(value)
+    }
+}
+
+impl<T: Serialize + Deserialize + Clone + std::fmt::Display> std::fmt::Display for FileOptionObjectGuard<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl<T: std::fmt::Display + Clone> ObjectDescTrait for FileOptionObjectDescContent<T> {
+    fn object_type_code(&self) -> ObjectTypeCode {
+        ObjectTypeCode::with_file_option()
+    }
+
+    type OwnerObj = ObjectId;
+    type AreaObj = Area;
+    type AuthorObj = ObjectId;
+    type PublicKeyObj = PublicKey;
+
+}
+
+#[derive(Clone)]
+pub struct FileOptionObjectBodyContent {  }
+
+impl Serialize for FileOptionObjectBodyContent {
+    fn raw_capacity(&self) -> usize {
+        0
+    }
+
+    fn serialize<'a>(&self,
+                     buf: &'a mut [u8]) -> NearResult<&'a mut [u8]> {
+        Ok(buf)
+    }
+}
+
+impl Deserialize for FileOptionObjectBodyContent {
+    fn deserialize<'de>(buf: &'de [u8]) -> NearResult<(Self, &'de [u8])> {
+        Ok((Self{},
+        buf))
+    }
+}
+
+impl ObjectBodyTrait for FileOptionObjectBodyContent { }
+
+impl std::fmt::Display for FileOptionObjectBodyContent {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "file-option-body: {{None}}")
+    }
+}

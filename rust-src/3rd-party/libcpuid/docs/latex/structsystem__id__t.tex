@@ -1,0 +1,81 @@
+\doxysection{system\+\_\+id\+\_\+t Struct Reference}
+\label{structsystem__id__t}\index{system\_id\_t@{system\_id\_t}}
+
+
+This contains the recognized features/info for all CPUs on the system.  
+
+
+
+
+{\ttfamily \#include $<$libcpuid.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \textbf{ num\+\_\+cpu\+\_\+types}
+\item 
+struct \textbf{ cpu\+\_\+id\+\_\+t} $\ast$ \textbf{ cpu\+\_\+types}
+\item 
+int32\+\_\+t \textbf{ l1\+\_\+data\+\_\+total\+\_\+instances}
+\item 
+int32\+\_\+t \textbf{ l1\+\_\+instruction\+\_\+total\+\_\+instances}
+\item 
+int32\+\_\+t \textbf{ l2\+\_\+total\+\_\+instances}
+\item 
+int32\+\_\+t \textbf{ l3\+\_\+total\+\_\+instances}
+\item 
+int32\+\_\+t \textbf{ l4\+\_\+total\+\_\+instances}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This contains the recognized features/info for all CPUs on the system. 
+
+\doxysubsection{Field Documentation}
+\label{structsystem__id__t_a42ff4f05e4a1c1e4dc3d4b7337a5a7ec} 
+\index{system\_id\_t@{system\_id\_t}!cpu\_types@{cpu\_types}}
+\index{cpu\_types@{cpu\_types}!system\_id\_t@{system\_id\_t}}
+\doxysubsubsection{cpu\_types}
+{\footnotesize\ttfamily struct \textbf{ cpu\+\_\+id\+\_\+t}$\ast$ system\+\_\+id\+\_\+t\+::cpu\+\_\+types}
+
+array of recognized CPU features/info for each different processor types in the system \label{structsystem__id__t_a7dd8b978026be7553a536af9e662d851} 
+\index{system\_id\_t@{system\_id\_t}!l1\_data\_total\_instances@{l1\_data\_total\_instances}}
+\index{l1\_data\_total\_instances@{l1\_data\_total\_instances}!system\_id\_t@{system\_id\_t}}
+\doxysubsubsection{l1\_data\_total\_instances}
+{\footnotesize\ttfamily int32\+\_\+t system\+\_\+id\+\_\+t\+::l1\+\_\+data\+\_\+total\+\_\+instances}
+
+Number of total L1 data cache instances. -\/1 if undetermined \label{structsystem__id__t_a2221488007b3832292b05ea3282cfeca} 
+\index{system\_id\_t@{system\_id\_t}!l1\_instruction\_total\_instances@{l1\_instruction\_total\_instances}}
+\index{l1\_instruction\_total\_instances@{l1\_instruction\_total\_instances}!system\_id\_t@{system\_id\_t}}
+\doxysubsubsection{l1\_instruction\_total\_instances}
+{\footnotesize\ttfamily int32\+\_\+t system\+\_\+id\+\_\+t\+::l1\+\_\+instruction\+\_\+total\+\_\+instances}
+
+Number of total L1 instruction cache instances. -\/1 if undetermined \label{structsystem__id__t_a0a92a7dbe08239a6ef60bbb582db3557} 
+\index{system\_id\_t@{system\_id\_t}!l2\_total\_instances@{l2\_total\_instances}}
+\index{l2\_total\_instances@{l2\_total\_instances}!system\_id\_t@{system\_id\_t}}
+\doxysubsubsection{l2\_total\_instances}
+{\footnotesize\ttfamily int32\+\_\+t system\+\_\+id\+\_\+t\+::l2\+\_\+total\+\_\+instances}
+
+Number of total L2 cache instances. -\/1 if undetermined \label{structsystem__id__t_a2d2fdadb02369613d8478ec4e99f617d} 
+\index{system\_id\_t@{system\_id\_t}!l3\_total\_instances@{l3\_total\_instances}}
+\index{l3\_total\_instances@{l3\_total\_instances}!system\_id\_t@{system\_id\_t}}
+\doxysubsubsection{l3\_total\_instances}
+{\footnotesize\ttfamily int32\+\_\+t system\+\_\+id\+\_\+t\+::l3\+\_\+total\+\_\+instances}
+
+Number of total L3 cache instances. -\/1 if undetermined \label{structsystem__id__t_a8554c8eb5d739d838c75d25e21d08182} 
+\index{system\_id\_t@{system\_id\_t}!l4\_total\_instances@{l4\_total\_instances}}
+\index{l4\_total\_instances@{l4\_total\_instances}!system\_id\_t@{system\_id\_t}}
+\doxysubsubsection{l4\_total\_instances}
+{\footnotesize\ttfamily int32\+\_\+t system\+\_\+id\+\_\+t\+::l4\+\_\+total\+\_\+instances}
+
+Number of total L4 cache instances. -\/1 if undetermined \label{structsystem__id__t_a56f96c59d93d6753d42b3a55ce2f59c3} 
+\index{system\_id\_t@{system\_id\_t}!num\_cpu\_types@{num\_cpu\_types}}
+\index{num\_cpu\_types@{num\_cpu\_types}!system\_id\_t@{system\_id\_t}}
+\doxysubsubsection{num\_cpu\_types}
+{\footnotesize\ttfamily uint8\+\_\+t system\+\_\+id\+\_\+t\+::num\+\_\+cpu\+\_\+types}
+
+count of different processor types in the system (e.\+g. performance, efficiency, ...) 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+libcpuid/\textbf{ libcpuid.\+h}\end{DoxyCompactItemize}

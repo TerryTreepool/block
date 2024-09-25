@@ -1,0 +1,13 @@
+[package]
+name = "topic-util"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+near-base = { path = "../../common/near-base" }
+near-util = { path = "../../common/near-util" }
+
+base = { path = "../base/" }
+lazy_static = { workspace = true }

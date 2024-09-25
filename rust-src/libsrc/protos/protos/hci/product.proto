@@ -1,0 +1,24 @@
+
+syntax="proto3";
+
+message product_info
+{
+    string parent_product_id = 1;
+    string product_id = 2;
+    string product_name = 3;
+
+    product_info_list children = 20;
+}
+
+message product_info_list {
+    repeated product_info products = 1;
+}
+
+message product_add {
+    product_info product = 1;
+}
+
+message product_query_all {
+    string brand_id = 1;
+}
+

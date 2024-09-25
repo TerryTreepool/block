@@ -1,0 +1,145 @@
+
+use near_util::{Topic, TopicBuilder, TopicStruct};
+
+use crate::topic_types::TOPIC_P_NEAR_LABEL;
+
+const BRAND_LABEL: &'static str     = "brand";
+const PRODUCT_LABEL: &'static str   = "product";
+const DEVICE_LABEL: &'static str    = "device";
+
+lazy_static::lazy_static! {
+    // query all brand
+    static ref NEAR_BRAND_QUERY_ALL: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(BRAND_LABEL)
+            .add_thirdary("query-all")
+            .build();
+    pub static ref NEAR_BRAND_QUERY_ALL_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_BRAND_QUERY_ALL;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // query brand
+    static ref NEAR_BRAND_QUERY: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(BRAND_LABEL)
+            .add_thirdary("query")
+            .build();
+    pub static ref NEAR_BRAND_QUERY_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_BRAND_QUERY;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // add brand
+    static ref NEAR_BRAND_ADD: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(BRAND_LABEL)
+            .add_thirdary("add")
+            .build();
+    pub static ref NEAR_BRAND_ADD_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_BRAND_ADD;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // del brand
+    static ref NEAR_BRAND_SETSTATUS: Topic = 
+    TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+        .secondary(BRAND_LABEL)
+        .add_thirdary("set-status")
+        .build();
+    pub static ref NEAR_BRAND_SETSTATUS_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_BRAND_SETSTATUS;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    /// product
+    // add
+    static ref NEAR_PRODUCT_ADD: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(PRODUCT_LABEL)
+            .add_thirdary("add")
+            .build();
+    pub static ref NEAR_PRODUCT_ADD_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_PRODUCT_ADD;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // update
+    static ref NEAR_PRODUCT_UPDATE: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(PRODUCT_LABEL)
+            .add_thirdary("update")
+            .build();
+    pub static ref NEAR_PRODUCT_UPDATE_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_PRODUCT_UPDATE;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // query
+    static ref NEAR_PRODUCT_QUERY: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(PRODUCT_LABEL)
+            .add_thirdary("query")
+            .build();
+    pub static ref NEAR_PRODUCT_QUERY_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_PRODUCT_QUERY;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // query all
+    static ref NEAR_PRODUCT_QUERY_ALL: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(PRODUCT_LABEL)
+            .add_thirdary("query-all")
+            .build();
+    pub static ref NEAR_PRODUCT_QUERY_ALL_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_PRODUCT_QUERY_ALL;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    /// device
+    // add
+    static ref NEAR_DEVICE_ADD: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(DEVICE_LABEL)
+            .add_thirdary("add")
+            .build();
+    pub static ref NEAR_DEVICE_ADD_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_DEVICE_ADD;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // update
+    static ref NEAR_DEVICE_UPDATE: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(DEVICE_LABEL)
+            .add_thirdary("update")
+            .build();
+    pub static ref NEAR_DEVICE_UPDATE_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_DEVICE_UPDATE;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // query
+    static ref NEAR_DEVICE_QUERY: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(DEVICE_LABEL)
+            .add_thirdary("query")
+            .build();
+    pub static ref NEAR_DEVICE_QUERY_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_DEVICE_QUERY;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+    // query all
+    static ref NEAR_DEVICE_QUERY_ALL: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(DEVICE_LABEL)
+            .add_thirdary("query-all")
+            .build();
+    pub static ref NEAR_DEVICE_QUERY_ALL_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_DEVICE_QUERY_ALL;
+        TopicStruct::try_from(topic).unwrap()
+    };
+
+}

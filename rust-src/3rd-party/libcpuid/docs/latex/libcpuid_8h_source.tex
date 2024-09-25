@@ -1,0 +1,518 @@
+\doxysection{libcpuid.\+h}
+\label{libcpuid_8h_source}\index{libcpuid/libcpuid.h@{libcpuid/libcpuid.h}}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ 2008\ \ Veselin\ Georgiev,}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ anrieffNOSPAM\ @\ mgail\_DOT.com\ (convert\ to\ gmail)}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ are\ met:}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ 1.\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ 2.\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above\ copyright}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer\ in\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ \ \ \ documentation\ and/or\ other\ materials\ provided\ with\ the\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ AUTHOR\ \`{}\`{}AS\ IS''\ AND\ ANY\ EXPRESS\ OR}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ IN\ NO\ EVENT\ SHALL\ THE\ AUTHOR\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ INCIDENTAL,\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ NOT\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE\ OF}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#ifndef\ \_\_LIBCPUID\_H\_\_}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#define\ \_\_LIBCPUID\_H\_\_}}
+\DoxyCodeLine{00108\ \textcolor{comment}{/*\ Include\ C99\ booleans:\ */}}
+\DoxyCodeLine{00109\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{comment}{/*\ Include\ some\ integer\ type\ specifications:\ */}}
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\#include\ "{}libcpuid\_types.h"{}}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{comment}{/*\ Some\ limits\ and\ other\ constants\ */}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\#include\ "{}libcpuid\_constants.h"{}}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00118\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00124\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ VENDOR\_INTEL\ =\ 0,\ \ }
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ VENDOR\_AMD,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ VENDOR\_CYRIX,\ \ \ \ \ \ }
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ VENDOR\_NEXGEN,\ \ \ \ \ }
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ VENDOR\_TRANSMETA,\ \ }
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ VENDOR\_UMC,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ VENDOR\_CENTAUR,\ \ \ \ }
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ VENDOR\_RISE,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ VENDOR\_SIS,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ VENDOR\_NSC,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ VENDOR\_HYGON,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ NUM\_CPU\_VENDORS,\ \ \ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ VENDOR\_UNKNOWN\ =\ -\/1,}
+\DoxyCodeLine{00139\ \}\ cpu\_vendor\_t;}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#define\ NUM\_CPU\_VENDORS\ NUM\_CPU\_VENDORS}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00145\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ ARCHITECTURE\_X86\ =\ 0,\ \ }
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ ARCHITECTURE\_ARM,\ \ \ \ \ \ }
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ NUM\_CPU\_ARCHITECTURES,\ }
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ ARCHITECTURE\_UNKNOWN\ =\ -\/1,}
+\DoxyCodeLine{00151\ \}\ cpu\_architecture\_t;}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\#define\ NUM\_CPU\_ARCHITECTURES\ NUM\_CPU\_ARCHITECTURES}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00157\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ PURPOSE\_GENERAL\ =\ 0,\ \ }
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ PURPOSE\_PERFORMANCE,\ \ }
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ PURPOSE\_EFFICIENCY,\ \ \ }
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ NUM\_CPU\_PURPOSES,\ \ \ \ \ }
+\DoxyCodeLine{00163\ \}\ cpu\_purpose\_t;}
+\DoxyCodeLine{00164\ \textcolor{preprocessor}{\#define\ NUM\_CPU\_PURPOSES\ NUM\_CPU\_PURPOSES}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00169\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ HYPERVISOR\_NONE\ =\ 0,\ \ \ \ \ }
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ HYPERVISOR\_BHYVE,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ HYPERVISOR\_HYPERV,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ HYPERVISOR\_KVM,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ HYPERVISOR\_PARALLELS,\ \ \ \ }
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ HYPERVISOR\_QEMU,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ HYPERVISOR\_VIRTUALBOX,\ \ \ }
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ HYPERVISOR\_VMWARE,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ HYPERVISOR\_XEN,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ NUM\_HYPERVISOR\_VENDORS,\ \ }
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ HYPERVISOR\_UNKNOWN\ =\ -\/1,}
+\DoxyCodeLine{00181\ \}\ hypervisor\_vendor\_t;}
+\DoxyCodeLine{00182\ \textcolor{preprocessor}{\#define\ NUM\_HYPERVISOR\_VENDORS\ NUM\_HYPERVISOR\_VENDORS}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00191\ \textcolor{keyword}{struct\ }cpu\_raw\_data\_t\ \{}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ uint32\_t\ basic\_cpuid[MAX\_CPUID\_LEVEL][NUM\_REGS];}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ uint32\_t\ ext\_cpuid[MAX\_EXT\_CPUID\_LEVEL][NUM\_REGS];}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ uint32\_t\ intel\_fn4[MAX\_INTELFN4\_LEVEL][NUM\_REGS];}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ uint32\_t\ intel\_fn11[MAX\_INTELFN11\_LEVEL][NUM\_REGS];}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ uint32\_t\ intel\_fn12h[MAX\_INTELFN12H\_LEVEL][NUM\_REGS];}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ uint32\_t\ intel\_fn14h[MAX\_INTELFN14H\_LEVEL][NUM\_REGS];}
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ uint32\_t\ amd\_fn8000001dh[MAX\_AMDFN8000001DH\_LEVEL][NUM\_REGS];}
+\DoxyCodeLine{00224\ \};}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00234\ \textcolor{keyword}{struct\ }cpu\_raw\_data\_array\_t\ \{}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ with\_affinity;}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ logical\_cpu\_t\ num\_raw;}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }cpu\_raw\_data\_t*\ raw;}
+\DoxyCodeLine{00247\ \};}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00272\ \textcolor{keyword}{struct\ }cpu\_sgx\_t\ \{}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ uint32\_t\ present;}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ uint8\_t\ max\_enclave\_32bit;}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ uint8\_t\ max\_enclave\_64bit;}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ uint8\_t\ flags[SGX\_FLAGS\_MAX];}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ num\_epc\_sections;}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ uint32\_t\ misc\_select;}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ uint64\_t\ secs\_attributes;}
+\DoxyCodeLine{00306\ }
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ uint64\_t\ secs\_xfrm;}
+\DoxyCodeLine{00311\ \};}
+\DoxyCodeLine{00312\ }
+\DoxyCodeLine{00316\ \textcolor{keyword}{struct\ }cpu\_id\_t\ \{}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ cpu\_architecture\_t\ architecture;}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ vendor\_str[VENDOR\_STR\_MAX];}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ brand\_str[BRAND\_STR\_MAX];}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ cpu\_vendor\_t\ vendor;}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ uint8\_t\ flags[CPU\_FLAGS\_MAX];}
+\DoxyCodeLine{00335\ }
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ int32\_t\ family;}
+\DoxyCodeLine{00338\ }
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ int32\_t\ model;}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ int32\_t\ stepping;}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ int32\_t\ ext\_family;}
+\DoxyCodeLine{00347\ }
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ int32\_t\ ext\_model;}
+\DoxyCodeLine{00353\ }
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ int32\_t\ num\_cores;}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ int32\_t\ num\_logical\_cpus;}
+\DoxyCodeLine{00363\ }
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ int32\_t\ total\_logical\_cpus;}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ int32\_t\ l1\_data\_cache;}
+\DoxyCodeLine{00385\ }
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ int32\_t\ l1\_instruction\_cache;}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ int32\_t\ l2\_cache;}
+\DoxyCodeLine{00399\ }
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ int32\_t\ l3\_cache;}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ int32\_t\ l4\_cache;}
+\DoxyCodeLine{00405\ }
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ int32\_t\ l1\_assoc;}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ int32\_t\ l1\_data\_assoc;}
+\DoxyCodeLine{00413\ }
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \ \ int32\_t\ l1\_instruction\_assoc;}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ int32\_t\ l2\_assoc;}
+\DoxyCodeLine{00419\ }
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ int32\_t\ l3\_assoc;}
+\DoxyCodeLine{00422\ }
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ int32\_t\ l4\_assoc;}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ int32\_t\ l1\_cacheline;}
+\DoxyCodeLine{00430\ }
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ int32\_t\ l1\_data\_cacheline;}
+\DoxyCodeLine{00433\ }
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ int32\_t\ l1\_instruction\_cacheline;}
+\DoxyCodeLine{00436\ }
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ int32\_t\ l2\_cacheline;}
+\DoxyCodeLine{00439\ }
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ int32\_t\ l3\_cacheline;}
+\DoxyCodeLine{00442\ }
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ int32\_t\ l4\_cacheline;}
+\DoxyCodeLine{00445\ }
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ int32\_t\ l1\_data\_instances;}
+\DoxyCodeLine{00448\ }
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ int32\_t\ l1\_instruction\_instances;}
+\DoxyCodeLine{00451\ }
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ int32\_t\ l2\_instances;}
+\DoxyCodeLine{00454\ }
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ int32\_t\ l3\_instances;}
+\DoxyCodeLine{00457\ }
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ int32\_t\ l4\_instances;}
+\DoxyCodeLine{00460\ }
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ cpu\_codename[CODENAME\_STR\_MAX];}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00478\ \ \ \ \ \ \ \ \ int32\_t\ sse\_size;}
+\DoxyCodeLine{00479\ }
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ uint8\_t\ detection\_hints[CPU\_HINTS\_MAX];}
+\DoxyCodeLine{00486\ }
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }cpu\_sgx\_t\ sgx;}
+\DoxyCodeLine{00489\ }
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ cpu\_affinity\_mask\_t\ affinity\_mask;}
+\DoxyCodeLine{00492\ }
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ cpu\_purpose\_t\ purpose;}
+\DoxyCodeLine{00495\ \};}
+\DoxyCodeLine{00496\ }
+\DoxyCodeLine{00500\ \textcolor{keyword}{struct\ }system\_id\_t\ \{}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ uint8\_t\ num\_cpu\_types;}
+\DoxyCodeLine{00503\ }
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }cpu\_id\_t*\ cpu\_types;}
+\DoxyCodeLine{00506\ }
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ int32\_t\ l1\_data\_total\_instances;}
+\DoxyCodeLine{00509\ }
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ int32\_t\ l1\_instruction\_total\_instances;}
+\DoxyCodeLine{00512\ }
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ int32\_t\ l2\_total\_instances;}
+\DoxyCodeLine{00515\ }
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ int32\_t\ l3\_total\_instances;}
+\DoxyCodeLine{00518\ }
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ int32\_t\ l4\_total\_instances;}
+\DoxyCodeLine{00521\ \};}
+\DoxyCodeLine{00522\ }
+\DoxyCodeLine{00543\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_FPU\ =\ 0,\ \ \ \ \ }
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_VME,\ }
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_DE,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00547\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PSE,\ }
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_TSC,\ }
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MSR,\ }
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PAE,\ }
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MCE,\ }
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CX8,\ }
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_APIC,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MTRR,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00555\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SEP,\ }
+\DoxyCodeLine{00556\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PGE,\ }
+\DoxyCodeLine{00557\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MCA,\ }
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CMOV,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PAT,\ }
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PSE36,\ \ \ \ \ }
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PN,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CLFLUSH,\ }
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_DTS,\ }
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_ACPI,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MMX,\ }
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_FXSR,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SSE,\ }
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SSE2,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00569\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SS,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_HT,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00571\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_TM,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_IA64,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PBE,\ }
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PNI,\ }
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PCLMUL,\ \ \ }
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_DTS64,\ \ \ \ \ }
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MONITOR,\ }
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_DS\_CPL,\ \ \ }
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_VMX,\ }
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SMX,\ }
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_EST,\ }
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_TM2,\ }
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SSSE3,\ \ \ \ \ }
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CID,\ }
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CX16,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_XTPR,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PDCM,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_DCA,\ }
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SSE4\_1,\ \ \ }
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SSE4\_2,\ \ \ }
+\DoxyCodeLine{00591\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SYSCALL,\ }
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_XD,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MOVBE,\ \ \ \ \ }
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_POPCNT,\ \ \ }
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AES,\ }
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_XSAVE,\ \ \ \ \ }
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_OSXSAVE,\ }
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX,\ }
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MMXEXT,\ \ \ }
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_3DNOW,\ \ \ \ \ }
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_3DNOWEXT,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_NX,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00603\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_FXSR\_OPT,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_RDTSCP,\ \ \ }
+\DoxyCodeLine{00605\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_LM,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00606\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_LAHF\_LM,\ }
+\DoxyCodeLine{00607\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CMP\_LEGACY,\ \ \ }
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SVM,\ }
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_ABM,\ }
+\DoxyCodeLine{00610\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_MISALIGNSSE,}
+\DoxyCodeLine{00611\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SSE4A,\ \ \ \ \ }
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_3DNOWPREFETCH,\ \ \ \ \ }
+\DoxyCodeLine{00613\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_OSVW,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_IBS,\ }
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SSE5,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SKINIT,\ \ \ }
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_WDT,\ }
+\DoxyCodeLine{00618\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_TS,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00619\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_FID,\ }
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_VID,\ }
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_TTP,\ }
+\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_TM\_AMD,\ \ \ }
+\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_STC,\ }
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_100MHZSTEPS,}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_HWPSTATE,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CONSTANT\_TSC,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_XOP,\ }
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_FMA3,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_FMA4,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_TBM,\ }
+\DoxyCodeLine{00631\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_F16C,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00632\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_RDRAND,\ \ \ \ \ }
+\DoxyCodeLine{00633\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_X2APIC,\ \ \ \ \ }
+\DoxyCodeLine{00634\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_CPB,\ }
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_APERFMPERF,\ \ \ }
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PFI,\ }
+\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_PA,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00638\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX2,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_BMI1,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_BMI2,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_HLE,\ }
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_RTM,\ }
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512F,\ }
+\DoxyCodeLine{00644\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512DQ,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00645\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512PF,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00646\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512ER,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00647\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512CD,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00648\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SHA\_NI,\ \ \ }
+\DoxyCodeLine{00649\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512BW,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00650\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512VL,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_SGX,\ }
+\DoxyCodeLine{00652\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_RDSEED,\ \ \ }
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_ADX,\ }
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512VNNI,\ }
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512VBMI,\ }
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_AVX512VBMI2,\ }
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ CPU\_FEATURE\_HYPERVISOR,\ }
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ termination:\ */}}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ NUM\_CPU\_FEATURES,}
+\DoxyCodeLine{00660\ \}\ cpu\_feature\_t;}
+\DoxyCodeLine{00661\ }
+\DoxyCodeLine{00667\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ CPU\_HINT\_SSE\_SIZE\_AUTH\ =\ 0,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00669\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ termination\ */}}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ NUM\_CPU\_HINTS,}
+\DoxyCodeLine{00671\ \}\ cpu\_hint\_t;}
+\DoxyCodeLine{00672\ }
+\DoxyCodeLine{00695\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00696\ \ \ \ \ \ \ \ \ INTEL\_SGX1,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00697\ \ \ \ \ \ \ \ \ INTEL\_SGX2,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00699\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ termination:\ */}}
+\DoxyCodeLine{00700\ \ \ \ \ \ \ \ \ NUM\_SGX\_FEATURES,}
+\DoxyCodeLine{00701\ \}\ cpu\_sgx\_feature\_t;}
+\DoxyCodeLine{00702\ }
+\DoxyCodeLine{00706\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00707\ \ \ \ \ \ \ \ \ ERR\_OK\ \ \ \ \ \ \ =\ \ 0,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00708\ \ \ \ \ \ \ \ \ ERR\_NO\_CPUID\ =\ -\/1,\ \ }
+\DoxyCodeLine{00709\ \ \ \ \ \ \ \ \ ERR\_NO\_RDTSC\ =\ -\/2,\ \ }
+\DoxyCodeLine{00710\ \ \ \ \ \ \ \ \ ERR\_NO\_MEM\ \ \ =\ -\/3,\ \ \ \ }
+\DoxyCodeLine{00711\ \ \ \ \ \ \ \ \ ERR\_OPEN\ \ \ \ \ =\ -\/4,\ \ \ \ \ \ }
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ ERR\_BADFMT\ \ \ =\ -\/5,\ \ \ \ }
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ ERR\_NOT\_IMP\ \ =\ -\/6,\ \ \ }
+\DoxyCodeLine{00714\ \ \ \ \ \ \ \ \ ERR\_CPU\_UNKN\ =\ -\/7,\ \ }
+\DoxyCodeLine{00715\ \ \ \ \ \ \ \ \ ERR\_NO\_RDMSR\ =\ -\/8,\ \ }
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ ERR\_NO\_DRIVER=\ -\/9,\ }
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ ERR\_NO\_PERMS\ =\ -\/10,\ }
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ ERR\_EXTRACT\ \ =\ -\/11,\ \ }
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ ERR\_HANDLE\ \ \ =\ -\/12,\ \ \ }
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ ERR\_INVMSR\ \ \ =\ -\/13,\ \ \ }
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ ERR\_INVCNB\ \ \ =\ -\/14,\ \ \ }
+\DoxyCodeLine{00722\ \ \ \ \ \ \ \ \ ERR\_HANDLE\_R\ =\ -\/15,\ }
+\DoxyCodeLine{00723\ \ \ \ \ \ \ \ \ ERR\_INVRANGE\ =\ -\/16,\ }
+\DoxyCodeLine{00724\ \ \ \ \ \ \ \ \ ERR\_NOT\_FOUND=\ -\/17,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00725\ \}\ cpu\_error\_t;}
+\DoxyCodeLine{00726\ }
+\DoxyCodeLine{00731\ \textcolor{keyword}{struct\ }cpu\_mark\_t\ \{}
+\DoxyCodeLine{00732\ \ \ \ \ \ \ \ \ uint64\_t\ tsc;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00733\ \ \ \ \ \ \ \ \ uint64\_t\ sys\_clock;\ \ \ \ }
+\DoxyCodeLine{00734\ \};}
+\DoxyCodeLine{00735\ }
+\DoxyCodeLine{00746\ \textcolor{keywordtype}{int}\ cpuid\_get\_total\_cpus(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00747\ }
+\DoxyCodeLine{00753\ \textcolor{keywordtype}{int}\ cpuid\_present(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00754\ }
+\DoxyCodeLine{00762\ \textcolor{keywordtype}{void}\ cpu\_exec\_cpuid(uint32\_t\ eax,\ uint32\_t*\ regs);}
+\DoxyCodeLine{00763\ }
+\DoxyCodeLine{00772\ \textcolor{keywordtype}{void}\ cpu\_exec\_cpuid\_ext(uint32\_t*\ regs);}
+\DoxyCodeLine{00773\ }
+\DoxyCodeLine{00781\ \textcolor{keywordtype}{int}\ cpuid\_get\_raw\_data(\textcolor{keyword}{struct}\ cpu\_raw\_data\_t*\ data);}
+\DoxyCodeLine{00782\ }
+\DoxyCodeLine{00792\ \textcolor{keywordtype}{int}\ cpuid\_get\_all\_raw\_data(\textcolor{keyword}{struct}\ cpu\_raw\_data\_array\_t*\ data);}
+\DoxyCodeLine{00793\ }
+\DoxyCodeLine{00811\ \textcolor{keywordtype}{int}\ cpuid\_serialize\_raw\_data(\textcolor{keyword}{struct}\ cpu\_raw\_data\_t*\ data,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename);}
+\DoxyCodeLine{00812\ }
+\DoxyCodeLine{00830\ \textcolor{keywordtype}{int}\ cpuid\_serialize\_all\_raw\_data(\textcolor{keyword}{struct}\ cpu\_raw\_data\_array\_t*\ data,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename);}
+\DoxyCodeLine{00831\ }
+\DoxyCodeLine{00844\ \textcolor{keywordtype}{int}\ cpuid\_deserialize\_raw\_data(\textcolor{keyword}{struct}\ cpu\_raw\_data\_t*\ data,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename);}
+\DoxyCodeLine{00845\ }
+\DoxyCodeLine{00860\ \textcolor{keywordtype}{int}\ cpuid\_deserialize\_all\_raw\_data(\textcolor{keyword}{struct}\ cpu\_raw\_data\_array\_t*\ data,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename);}
+\DoxyCodeLine{00861\ }
+\DoxyCodeLine{00885\ \textcolor{keywordtype}{int}\ cpu\_identify(\textcolor{keyword}{struct}\ cpu\_raw\_data\_t*\ raw,\ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data);}
+\DoxyCodeLine{00886\ }
+\DoxyCodeLine{00901\ \textcolor{keywordtype}{int}\ cpu\_identify\_all(\textcolor{keyword}{struct}\ cpu\_raw\_data\_array\_t*\ raw\_array,\ \textcolor{keyword}{struct}\ system\_id\_t*\ system);}
+\DoxyCodeLine{00902\ }
+\DoxyCodeLine{00915\ \textcolor{keywordtype}{int}\ cpu\_request\_core\_type(cpu\_purpose\_t\ purpose,\ \textcolor{keyword}{struct}\ cpu\_raw\_data\_array\_t*\ raw\_array,\ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data);}
+\DoxyCodeLine{00916\ }
+\DoxyCodeLine{00922\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ cpu\_architecture\_str(cpu\_architecture\_t\ architecture);}
+\DoxyCodeLine{00923\ }
+\DoxyCodeLine{00929\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ cpu\_purpose\_str(cpu\_purpose\_t\ purpose);}
+\DoxyCodeLine{00930\ }
+\DoxyCodeLine{00938\ \textcolor{keywordtype}{char}*\ affinity\_mask\_str\_r(cpu\_affinity\_mask\_t*\ affinity\_mask,\ \textcolor{keywordtype}{char}*\ buffer,\ uint32\_t\ buffer\_len);}
+\DoxyCodeLine{00939\ }
+\DoxyCodeLine{00946\ \textcolor{keywordtype}{char}*\ affinity\_mask\_str(cpu\_affinity\_mask\_t\ *affinity\_mask);}
+\DoxyCodeLine{00947\ }
+\DoxyCodeLine{00955\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ cpu\_feature\_str(cpu\_feature\_t\ feature);}
+\DoxyCodeLine{00956\ }
+\DoxyCodeLine{00965\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ cpuid\_error(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00966\ }
+\DoxyCodeLine{00991\ \textcolor{keywordtype}{void}\ cpu\_rdtsc(uint64\_t*\ result);}
+\DoxyCodeLine{00992\ }
+\DoxyCodeLine{01005\ \textcolor{keywordtype}{void}\ cpu\_tsc\_mark(\textcolor{keyword}{struct}\ cpu\_mark\_t*\ mark);}
+\DoxyCodeLine{01006\ }
+\DoxyCodeLine{01030\ \textcolor{keywordtype}{void}\ cpu\_tsc\_unmark(\textcolor{keyword}{struct}\ cpu\_mark\_t*\ mark);}
+\DoxyCodeLine{01031\ }
+\DoxyCodeLine{01048\ \textcolor{keywordtype}{int}\ cpu\_clock\_by\_mark(\textcolor{keyword}{struct}\ cpu\_mark\_t*\ mark);}
+\DoxyCodeLine{01049\ }
+\DoxyCodeLine{01064\ \textcolor{keywordtype}{int}\ cpu\_clock\_by\_os(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01065\ }
+\DoxyCodeLine{01108\ \textcolor{keywordtype}{int}\ cpu\_clock\_measure(\textcolor{keywordtype}{int}\ millis,\ \textcolor{keywordtype}{int}\ quad\_check);}
+\DoxyCodeLine{01109\ }
+\DoxyCodeLine{01149\ \textcolor{keywordtype}{int}\ cpu\_clock\_by\_ic(\textcolor{keywordtype}{int}\ millis,\ \textcolor{keywordtype}{int}\ runs);}
+\DoxyCodeLine{01150\ }
+\DoxyCodeLine{01161\ \textcolor{keywordtype}{int}\ cpu\_clock(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01162\ }
+\DoxyCodeLine{01163\ }
+\DoxyCodeLine{01171\ \textcolor{keyword}{struct\ }cpu\_epc\_t\ \{}
+\DoxyCodeLine{01172\ \ \ \ \ \ \ \ \ uint64\_t\ start\_addr;}
+\DoxyCodeLine{01173\ \ \ \ \ \ \ \ \ uint64\_t\ length;}
+\DoxyCodeLine{01174\ \};}
+\DoxyCodeLine{01175\ }
+\DoxyCodeLine{01187\ \textcolor{keyword}{struct\ }cpu\_epc\_t\ cpuid\_get\_epc(int\ index,\ const\ struct\ cpu\_raw\_data\_t*\ raw);}
+\DoxyCodeLine{01188\ }
+\DoxyCodeLine{01194\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ cpuid\_lib\_version(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01195\ }
+\DoxyCodeLine{01196\ \textcolor{keyword}{typedef}\ void\ (*libcpuid\_warn\_fn\_t)\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *msg);}
+\DoxyCodeLine{01210\ libcpuid\_warn\_fn\_t\ cpuid\_set\_warn\_function(libcpuid\_warn\_fn\_t\ warn\_fun);}
+\DoxyCodeLine{01211\ }
+\DoxyCodeLine{01223\ \textcolor{keywordtype}{void}\ cpuid\_set\_verbosiness\_level(\textcolor{keywordtype}{int}\ level);}
+\DoxyCodeLine{01224\ }
+\DoxyCodeLine{01225\ }
+\DoxyCodeLine{01232\ cpu\_vendor\_t\ cpuid\_get\_vendor(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01233\ }
+\DoxyCodeLine{01250\ hypervisor\_vendor\_t\ cpuid\_get\_hypervisor(\textcolor{keyword}{struct}\ cpu\_raw\_data\_t*\ raw,\ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data);}
+\DoxyCodeLine{01251\ }
+\DoxyCodeLine{01255\ \textcolor{keyword}{struct\ }cpu\_list\_t\ \{}
+\DoxyCodeLine{01257\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ num\_entries;}
+\DoxyCodeLine{01259\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ **names;}
+\DoxyCodeLine{01260\ \};}
+\DoxyCodeLine{01261\ }
+\DoxyCodeLine{01280\ \textcolor{keywordtype}{void}\ cpuid\_get\_cpu\_list(cpu\_vendor\_t\ vendor,\ \textcolor{keyword}{struct}\ cpu\_list\_t*\ list);}
+\DoxyCodeLine{01281\ }
+\DoxyCodeLine{01290\ \textcolor{keywordtype}{void}\ cpuid\_free\_cpu\_list(\textcolor{keyword}{struct}\ cpu\_list\_t*\ list);}
+\DoxyCodeLine{01291\ }
+\DoxyCodeLine{01300\ \textcolor{keywordtype}{void}\ cpuid\_free\_raw\_data\_array(\textcolor{keyword}{struct}\ cpu\_raw\_data\_array\_t*\ raw\_array);}
+\DoxyCodeLine{01301\ }
+\DoxyCodeLine{01310\ \textcolor{keywordtype}{void}\ cpuid\_free\_system\_id(\textcolor{keyword}{struct}\ system\_id\_t*\ system);}
+\DoxyCodeLine{01311\ }
+\DoxyCodeLine{01312\ \textcolor{keyword}{struct\ }msr\_driver\_t;}
+\DoxyCodeLine{01324\ \textcolor{keyword}{struct\ }msr\_driver\_t*\ cpu\_msr\_driver\_open(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{01325\ }
+\DoxyCodeLine{01339\ \textcolor{keyword}{struct\ }msr\_driver\_t*\ cpu\_msr\_driver\_open\_core(\textcolor{keywordtype}{unsigned}\ core\_num);}
+\DoxyCodeLine{01340\ }
+\DoxyCodeLine{01365\ \textcolor{keywordtype}{int}\ cpu\_rdmsr(\textcolor{keyword}{struct}\ msr\_driver\_t*\ handle,\ uint32\_t\ msr\_index,\ uint64\_t*\ result);}
+\DoxyCodeLine{01366\ }
+\DoxyCodeLine{01367\ }
+\DoxyCodeLine{01368\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{01369\ \ \ \ \ \ \ \ \ INFO\_MPERF,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01372\ \ \ \ \ \ \ \ \ INFO\_APERF,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01375\ \ \ \ \ \ \ \ \ INFO\_MIN\_MULTIPLIER,\ \ \ \ \ \ \ }
+\DoxyCodeLine{01377\ \ \ \ \ \ \ \ \ INFO\_CUR\_MULTIPLIER,\ \ \ \ \ \ \ }
+\DoxyCodeLine{01380\ \ \ \ \ \ \ \ \ INFO\_MAX\_MULTIPLIER,\ \ \ \ \ \ \ }
+\DoxyCodeLine{01382\ \ \ \ \ \ \ \ \ INFO\_TEMPERATURE,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01383\ \ \ \ \ \ \ \ \ INFO\_THROTTLING,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01385\ \ \ \ \ \ \ \ \ INFO\_VOLTAGE,\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01387\ \ \ \ \ \ \ \ \ INFO\_BCLK,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01388\ \ \ \ \ \ \ \ \ INFO\_BUS\_CLOCK,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{01391\ \}\ cpu\_msrinfo\_request\_t;}
+\DoxyCodeLine{01392\ }
+\DoxyCodeLine{01407\ \textcolor{keywordtype}{int}\ cpu\_rdmsr\_range(\textcolor{keyword}{struct}\ msr\_driver\_t*\ handle,\ uint32\_t\ msr\_index,\ uint8\_t\ highbit,}
+\DoxyCodeLine{01408\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint8\_t\ lowbit,\ uint64\_t*\ result);}
+\DoxyCodeLine{01409\ }
+\DoxyCodeLine{01423\ \textcolor{keywordtype}{int}\ cpu\_msrinfo(\textcolor{keyword}{struct}\ msr\_driver\_t*\ handle,\ cpu\_msrinfo\_request\_t\ which);}
+\DoxyCodeLine{01424\ \textcolor{preprocessor}{\#define\ CPU\_INVALID\_VALUE\ 0x3fffffff}}
+\DoxyCodeLine{01425\ }
+\DoxyCodeLine{01443\ \textcolor{keywordtype}{int}\ msr\_serialize\_raw\_data(\textcolor{keyword}{struct}\ msr\_driver\_t*\ handle,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename);}
+\DoxyCodeLine{01444\ }
+\DoxyCodeLine{01457\ \textcolor{keywordtype}{int}\ cpu\_msr\_driver\_close(\textcolor{keyword}{struct}\ msr\_driver\_t*\ handle);}
+\DoxyCodeLine{01458\ }
+\DoxyCodeLine{01459\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{01460\ \}\ \textcolor{comment}{/*\ extern\ "{}C"{}\ */}}
+\DoxyCodeLine{01461\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01462\ }
+\DoxyCodeLine{01463\ }
+\DoxyCodeLine{01466\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_\_LIBCPUID\_H\_\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

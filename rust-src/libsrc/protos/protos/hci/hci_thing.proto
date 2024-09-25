@@ -1,0 +1,52 @@
+
+syntax = "proto3";
+import "brand.proto";
+
+message hci_thing {
+    enum hci_thing_status {
+        NotFound = 0;
+        Disabled = 1;
+        Online = 2;
+        Offline = 3;
+    }
+    string thing_id = 1;
+    string mac_address = 2;
+    hci_thing_status status = 3;
+    map<string, string> data = 4;
+}
+
+message hci_thing_list {
+    repeated hci_thing list = 1;
+}
+
+message hci_add_thing {
+    string brand_id = 1;
+    string major_product_id = 2;
+    string minor_product_id = 3;
+    string thing_name = 4;
+    hci_thing thing = 5;
+}
+
+message hci_ctrl_thing {
+    string thing_id = 2;
+    map<string, string> data = 3;
+}
+
+message hci_crud_thing {
+    enum hci_crud_m {
+        remove = 0;
+        pair = 1;
+        remove_pair = 2;
+        query = 3;
+    }
+
+    string thing_id = 1;
+    hci_crud_m method = 2;
+    map<string, string> data = 3;
+
+}
+
+message hci_task_result {
+    uint32 task_id = 1;
+    repeated string thing_ids = 2;
+}

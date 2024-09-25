@@ -1,0 +1,18 @@
+
+syntax="proto3";
+
+message Cfg {
+    // pub task_config: TaskConfig,
+    // pub ctrl_task_config: TaskConfig,
+    RoutinesConfig routines = 4;
+
+}
+
+message CtrlThingTaskConfig {
+    uint64 ctrl_interval = 1;
+}
+
+message RoutinesConfig {
+
+    CtrlThingTaskConfig ctrl_thing_task_config = 1;
+}

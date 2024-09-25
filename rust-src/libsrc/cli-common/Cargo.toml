@@ -1,0 +1,34 @@
+[package]
+name = "cli-common"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = { workspace = true }
+near-base = { path = "../../common/near-base" }
+near-core = { path = "../../common/near-core" }
+near-transport = { path = "../../common/near-transport" }
+near-util = { path = "../../common/near-util" }
+base = { path = "../../libsrc/base" }
+# common = { path = "../../libsrc/common" }
+protos = { path = "../../libsrc/protos" }
+topic-util = { path = "../topic-util" }
+discovery-util = { path = "../../libsrc/discovery-util" }
+cip39 = { path = "../../libsrc/cip39" }
+
+async-std = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+
+once_cell = { workspace = true }
+lazy_static = { workspace = true }
+
+protobuf = { version = '=3.2.0', features = ['with-bytes'] }
+
+[target.'cfg(target_os="android")'.dependencies]
+flutter_rust_bridge = "=1.79.0"
+
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]

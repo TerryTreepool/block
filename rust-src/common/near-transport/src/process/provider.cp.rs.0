@@ -1,0 +1,77 @@
+
+use std::{sync::{RwLock, Arc, },
+          collections::{BTreeMap, },
+    };
+
+use near_base::{ObjectId,
+                NearResult
+    };
+
+use crate::{ProcessEventTrait, };
+use super::{itf::ItfTrait};
+
+#[async_trait::async_trait]
+pub trait Routine: Send + Sync {
+//     // fn clone_as_routine(&self) -> Box<dyn Routine<REQ, RESP>>;
+    async fn on_routine<REQ: ItfTrait, RESP: ItfTrait>(&self, command: u16, param: REQ) -> NearResult<RESP>;
+}
+
+struct EventManagerImpl {
+    routines: RwLock<BTreeMap<u16, Box<dyn Routine>>>,
+}
+
+pub struct EventManager<REQ: ItfTrait, RESP: ItfTrait>(Arc<EventManagerImpl<REQ, RESP>>);
+
+impl<REQ, RESP> EventManager<REQ, RESP>
+where REQ: ItfTrait,
+      RESP: ItfTrait, {
+    pub fn new() -> Self {
+        Self(Arc::new(EventManagerImpl {
+            routines: RwLock::new(BTreeMap::new()),
+        }))
+    }
+
+    pub fn routine_of(&self, command: u16) -> Option<Box<dyn Routine<REQ, RESP>>> {
+        self.0.routines.read().unwrap()
+            .get(&command)
+            .map(| routine | routine.clone_as_routine() )
+    }
+
+    pub fn add_routine(&self, command: u16, routine: Box<dyn Routine<REQ, RESP>>) -> NearResult<()> {
+        let routines = &mut *self.0.routines.write().unwrap();
+
+        match routines.get(&command) {
+            Some(r) => {},
+            None => {
+                routines.insert(command, routine.clone_as_routine());
+            }
+        }
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl<REQ, RESP> ProcessEventTrait for EventManager<REQ, RESP> 
+where REQ: ItfTrait,
+      RESP: ItfTrait, {
+    async fn on_package_event(&self, from: ObjectId, command: u16, sequence: u32, data: &[u8]) -> NearResult<Option<Vec<u8>>> {
+        let routine = 
+        Ok(None)
+    }
+}
+
+// #[async_trait::async_trait]
+// impl<REQ, RESP> Routine<REQ, RESP> for EventManager<REQ, RESP>
+// where REQ: ItfTrait,
+//       RESP: ItfTrait, {
+//     fn clone_as_routine(&self) -> Box<dyn Routine<REQ, RESP>> {
+//         unimplemented!()
+//     }
+
+//     async fn on_routine(&self, command: u16, param: &REQ) -> NearResult<RESP> {
+//         if let Some(routine) = self.routine_of(command) {
+
+//         }
+//     }
+
+// }

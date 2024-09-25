@@ -1,0 +1,122 @@
+use std::io::{Error, Read, Cursor};
+
+use rlua::{HookTriggers, UserData, UserDataMethods, Function, MetaMethod, AnyUserData};
+
+#[derive(Clone)]
+pub struct Test {
+    a: u32,
+    b: u32,
+}
+
+impl Test {
+    pub fn get_a(&self) -> u32 { self.a } 
+    pub fn get_b(&self) -> u32 { self.b }
+}
+
+impl UserData for Test {
+    fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
+        methods.add_method("get_a", |_, vec, ()| {
+            Ok(vec.get_a())
+        });
+
+        methods.add_method("get_b", |_, vec, ()| {
+            Ok(vec.get_b())
+        });
+
+        // methods.add_meta_function(MetaMethod::Add, |_, (vec1, vec2): (Vec2, Vec2)| {
+        //     Ok(Vec2(vec1.0 + vec2.0, vec1.1 + vec2.1))
+        // });
+    }
+
+}
+
+fn main() {
+    let lua = rlua::Lua::new();
+
+    println!("+++++++++++++++++++++++++++++++++++++");
+    let r = lua.context(| lua_context | {
+        lua_context.load(r#"
+                print("hello world!")
+        "#).exec()
+    }).unwrap();
+
+    println!("+++++++++++++++++++++++++++++++++++++");
+    let r = 
+    lua.context(|lua_ctx| {
+        let globals = lua_ctx.globals();
+
+        lua_ctx
+            .load(
+                r#"
+                cc = 'foo'..'bar'
+            "#,
+            )
+            .set_name("example code").unwrap()
+            .exec()
+            .unwrap();
+    });
+
+    lua.context(|lua_ctx| {
+        let globals = lua_ctx.globals();
+        println!("{}", globals.get::<_, String>("cc").unwrap());
+    });
+
+    println!("+++++++++++++++++++++++++++++++++++++");
+    struct MyUserdata {
+        id: u8,
+    }
+
+    impl UserData for MyUserdata {
+        fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
+            methods.add_function("get_value", |_, ud: AnyUserData| {
+                Ok(ud.borrow::<MyUserdata>()?.id)
+            });
+            methods.add_function("set_value", |_, (ud, value): (AnyUserData, u8)| {
+                ud.borrow_mut::<MyUserdata>()?.id = value;
+                Ok(())
+            });
+            methods.add_function("get_constant", |_, ()| Ok(7));
+        }
+    }
+
+    lua.context(|lua| {
+        let globals = lua.globals();
+        let userdata = lua.create_userdata(MyUserdata{id: 42}).unwrap();
+        globals.set("userdata", userdata.clone()).unwrap();
+
+        let mut S = 
+            std::fs::OpenOptions::new()
+                .read(true)
+                .open("/root/near/rust-src/test/test_lua/test_lua.lua")
+                .unwrap();
+        let mut B = vec![0u8; S.metadata().unwrap().len() as usize];
+        
+        S.read_exact(B.as_mut_slice());
+                // .
+        lua.load(B.as_slice())
+            .exec()
+            .unwrap();
+    });
+
+    lua.context(|lua| {
+        let globals = lua.globals();
+        let get = globals.get::<_, Function>("get_it").unwrap();
+        let set = globals.get::<_, Function>("set_it").unwrap();
+        let get_constant = globals.get::<_, Function>("get_constant").unwrap();
+
+        let get_v = get.call::<_, i64>(()).unwrap();
+        println!("get_v: {get_v}");
+        assert_eq!(get_v, 42);
+
+        let set_v = set.call::<u8, ()>(64).unwrap();
+        println!("set_v: 64");
+
+        let get_v = get.call::<_, i64>(()).unwrap();
+        println!("get_v: {get_v}");
+        // userdata.borrow_mut::<MyUserdata>().unwrap().id = 64;
+        // assert_eq!(get.call::<_, i64>(()).unwrap(), 64);
+        // set.call::<_, ()>(100).unwrap();
+        // assert_eq!(get.call::<_, i64>(()).unwrap(), 100);
+        // assert_eq!(get_constant.call::<_, i64>(()).unwrap(), 7);
+    });
+}

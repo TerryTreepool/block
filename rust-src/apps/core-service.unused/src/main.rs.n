@@ -1,0 +1,35 @@
+
+use std::{path::PathBuf,
+        sync::RwLock, str::FromStr,
+    };
+
+use common::{ProcessCommandBuild, ProcessAction};
+use near_base::{DeviceObject, builder_codec::FileDecoder, NearResult};
+use process::Process;
+
+mod service;
+mod event;
+mod process;
+
+const SERVICE_NAME: &str = "core-service";
+
+#[async_std::main]
+async fn main() {
+    let process = 
+        match ProcessCommandBuild::new(SERVICE_NAME, false)
+                .launch(Process::new(SERVICE_NAME).expect("failed create main process"))
+                .await {
+        Ok(process) => {
+            if let ProcessAction::Start(process) = process {
+                process
+            } else {
+                panic!("exiting...");
+            }
+        }
+        Err(err) => { panic!("{err}") } 
+    };
+
+    if let Err(err) = process.run().await {
+        panic!("{err}")
+    }
+}

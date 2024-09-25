@@ -1,0 +1,19 @@
+
+use near_util::{Topic, TopicBuilder, TopicStruct};
+
+use crate::topic_types::TOPIC_P_NEAR_LABEL;
+
+const HCI_LABEL: &'static str     = "hci";
+
+lazy_static::lazy_static! {
+    // query all brand
+    static ref NEAR_HCI_SEARCH: Topic = 
+        TopicBuilder::new(TOPIC_P_NEAR_LABEL)
+            .secondary(HCI_LABEL)
+            .add_thirdary("search")
+            .build();
+    pub static ref NEAR_HCI_SEARCH_PUB: TopicStruct<'static> = {
+        let topic: &'static Topic = &NEAR_HCI_SEARCH;
+        TopicStruct::try_from(topic).unwrap()
+    };
+}

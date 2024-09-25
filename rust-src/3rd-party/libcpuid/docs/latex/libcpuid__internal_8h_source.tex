@@ -1,0 +1,208 @@
+\doxysection{libcpuid\+\_\+internal.\+h}
+\label{libcpuid__internal_8h_source}\index{libcpuid/libcpuid\_internal.h@{libcpuid/libcpuid\_internal.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ 2016\ \ Veselin\ Georgiev,}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ anrieffNOSPAM\ @\ mgail\_DOT.com\ (convert\ to\ gmail)}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ are\ met:}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ 1.\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ 2.\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above\ copyright}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer\ in\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ \ \ \ documentation\ and/or\ other\ materials\ provided\ with\ the\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ AUTHOR\ \`{}\`{}AS\ IS''\ AND\ ANY\ EXPRESS\ OR}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ IN\ NO\ EVENT\ SHALL\ THE\ AUTHOR\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ INCIDENTAL,\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ NOT\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE\ OF}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#ifndef\ \_\_LIBCPUID\_INTERNAL\_H\_\_}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#define\ \_\_LIBCPUID\_INTERNAL\_H\_\_}}
+\DoxyCodeLine{00028\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00029\ \textcolor{comment}{\ *\ This\ file\ contains\ internal\ undocumented\ declarations\ and\ function\ prototypes}}
+\DoxyCodeLine{00030\ \textcolor{comment}{\ *\ for\ the\ workings\ of\ the\ internal\ library\ infrastructure.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ EXTRACTS\_BIT(reg,\ bit)\ \ \ \ \ \ \ \ \ \ \ \ \ \ ((reg\ >>\ bit)\ \ \ \ \&\ 0x1)}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#define\ EXTRACTS\_BITS(reg,\ highbit,\ lowbit)\ ((reg\ >>\ lowbit)\ \&\ ((1ULL\ <<\ (highbit\ -\/\ lowbit\ +\ 1))\ -\/\ 1))}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{enum}\ \_common\_codes\_t\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ NA\ =\ 0,}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ NC,\ \textcolor{comment}{/*\ No\ code\ */}}
+\DoxyCodeLine{00039\ \};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{enum}\ \_cache\_type\_t\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ L1I,}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ L1D,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ L2,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ L3,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ L4,}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ NUM\_CACHE\_TYPES}
+\DoxyCodeLine{00048\ \};}
+\DoxyCodeLine{00049\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_cache\_type\_t\ cache\_type\_t;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#define\ CODE(x)\ x}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#define\ CODE2(x,\ y)\ x\ =\ y}}
+\DoxyCodeLine{00053\ \textcolor{keyword}{enum}\ \_amd\_code\_t\ \{}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#include\ "{}amd\_code\_t.h"{}}}
+\DoxyCodeLine{00055\ \};}
+\DoxyCodeLine{00056\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_amd\_code\_t\ amd\_code\_t;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{enum}\ \_centaur\_code\_t\ \{}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#include\ "{}centaur\_code\_t.h"{}}}
+\DoxyCodeLine{00060\ \};}
+\DoxyCodeLine{00061\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_centaur\_code\_t\ centaur\_code\_t;}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keyword}{enum}\ \_intel\_code\_t\ \{}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#include\ "{}intel\_code\_t.h"{}}}
+\DoxyCodeLine{00065\ \};}
+\DoxyCodeLine{00066\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_intel\_code\_t\ intel\_code\_t;}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#undef\ CODE}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#undef\ CODE2}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{keyword}{struct\ }internal\_id\_info\_t\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keyword}{union\ }\{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ amd\_code\_t\ \ \ \ \ amd;}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ centaur\_code\_t\ centaur;}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ intel\_code\_t\ \ \ intel;}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \}\ code;}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ uint64\_t\ bits;}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ score;\ \textcolor{comment}{//\ detection\ (matchtable)\ score}}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ int32\_t\ cache\_mask[NUM\_CACHE\_TYPES];}
+\DoxyCodeLine{00079\ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{keyword}{struct\ }internal\_apic\_info\_t\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ int32\_t\ apic\_id;}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ int32\_t\ package\_id;}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ int32\_t\ core\_id;}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ int32\_t\ smt\_id;}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ int32\_t\ cache\_id[NUM\_CACHE\_TYPES];}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ logical\_cpu\_t\ logical\_cpu;}
+\DoxyCodeLine{00088\ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{keyword}{struct\ }internal\_core\_id\_t\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ logical\_cpu\_t\ num\_logical\_cpu;}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ int32\_t\ core\_id;}
+\DoxyCodeLine{00093\ \};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{keyword}{struct\ }internal\_cache\_id\_t\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ logical\_cpu\_t\ num\_logical\_cpu;}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ int32\_t\ cache\_id;}
+\DoxyCodeLine{00098\ \};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{preprocessor}{\#define\ CORES\_HTABLE\_SIZE\ 256}}
+\DoxyCodeLine{00101\ \textcolor{keyword}{struct\ }internal\_core\_instances\_t\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ uint8\_t\ instances;}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }internal\_core\_id\_t\ htable[CORES\_HTABLE\_SIZE];}
+\DoxyCodeLine{00104\ \};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#define\ CACHES\_HTABLE\_SIZE\ 256}}
+\DoxyCodeLine{00107\ \textcolor{keyword}{struct\ }internal\_cache\_instances\_t\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ uint8\_t\ instances[NUM\_CACHE\_TYPES];}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }internal\_cache\_id\_t\ htable[NUM\_CACHE\_TYPES][CACHES\_HTABLE\_SIZE];}
+\DoxyCodeLine{00110\ \};}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\#define\ LBIT(x)\ (((long\ long)\ 1)\ <<\ x)}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{keyword}{enum}\ \_common\_bits\_t\ \{}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \_M\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 0\ ),}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ MOBILE\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 1\ ),}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \_MP\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 2\ ),}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \_3\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 3\ ),}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \_5\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 4\ ),}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \_7\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 5\ ),}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \_9\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 6\ ),}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \_H\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 7\ ),}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \_S\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 8\ ),}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \_U\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ \ 9\ ),}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \_X\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 10\ ),}
+\DoxyCodeLine{00126\ \};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ additional\ detection\ bits\ for\ Intel\ CPUs:}}
+\DoxyCodeLine{00129\ \textcolor{keyword}{enum}\ \_intel\_bits\_t\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ PENTIUM\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 10\ ),}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ CELERON\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 11\ ),}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ CORE\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 12\ ),}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \_I\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 13\ ),}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ XEON\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 14\ ),}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ ATOM\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 15\ ),}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \_K\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 16\ ),}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \_P\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 17\ ),}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \_N\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 18\ ),}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \_W\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 19\ ),}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \_D\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 20\ ),}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \_BRONZE\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 21\ ),}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \_SILVER\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 22\ ),}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \_GOLD\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 23\ ),}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \_PLATINIUM\_\ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 24\ ),}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \_MAX\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 25\ ),}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \_J\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 26\ ),}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \_N\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 27\ ),}
+\DoxyCodeLine{00148\ \};}
+\DoxyCodeLine{00149\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_intel\_bits\_t\ intel\_bits\_t;}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{keyword}{enum}\ \_amd\_bits\_t\ \{}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ ATHLON\_\ \ \ \ \ \ =\ LBIT(\ 10\ ),}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \_XP\_\ \ \ \ \ \ \ \ \ =\ LBIT(\ 11\ ),}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ DURON\_\ \ \ \ \ \ \ =\ LBIT(\ 12\ ),}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ SEMPRON\_\ \ \ \ \ =\ LBIT(\ 13\ ),}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ OPTERON\_\ \ \ \ \ =\ LBIT(\ 14\ ),}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ TURION\_\ \ \ \ \ \ =\ LBIT(\ 15\ ),}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ RYZEN\_\ \ \ \ \ \ \ =\ LBIT(\ 16\ ),}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ RYZEN\_TR\_\ \ \ \ =\ LBIT(\ 17\ ),}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ EPYC\_\ \ \ \ \ \ \ \ =\ LBIT(\ 18\ ),}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \_LV\_\ \ \ \ \ \ \ \ \ =\ LBIT(\ 19\ ),}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \_64\_\ \ \ \ \ \ \ \ \ =\ LBIT(\ 20\ ),}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \_X2\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 21\ ),}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \_X3\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 22\ ),}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \_X4\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 23\ ),}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \_X6\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 24\ ),}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \_FX\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 25\ ),}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \_APU\_\ \ \ \ \ \ \ \ =\ LBIT(\ 26\ ),}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ C86\_\ \ \ \ \ \ \ \ \ =\ LBIT(\ 27\ ),}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \_Z\ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 28\ ),}
+\DoxyCodeLine{00171\ \};}
+\DoxyCodeLine{00172\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_amd\_bits\_t\ amd\_bits\_t;}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \textcolor{keyword}{enum}\ \_via\_bits\_t\ \{}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ SAMUEL\_\ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 10\ ),}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ EZRA\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 11\ ),}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ NEHEMIAH\_\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 12\ ),}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ ESTHER\_\ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 13\ ),}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ EDEN\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 14\ ),}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ CNA\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 15\ ),}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ NANO\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 16\ ),}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ QUADCORE\_\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 17\ ),}
+\DoxyCodeLine{00183\ \};}
+\DoxyCodeLine{00184\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_via\_bits\_t\ via\_bits\_t;}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \textcolor{keyword}{enum}\ \_zhaoxin\_bits\_t\ \{}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ KAISHENG\_\ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 10\ ),}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ KAIXIAN\_\ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 11\ ),}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \_KH\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 12\ ),}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \_KX\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 13\ ),}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \_ZX\_\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 14\ ),}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \_C\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 15\ ),}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \_D\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 16\ ),}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \_E\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ LBIT(\ 17\ ),}
+\DoxyCodeLine{00195\ \};}
+\DoxyCodeLine{00196\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \_zhaoxin\_bits\_t\ zhaoxin\_bits\_t;}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \textcolor{keywordtype}{int}\ cpu\_ident\_internal(\textcolor{keyword}{struct}\ cpu\_raw\_data\_t*\ raw,\ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data,}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct}\ internal\_id\_info\_t*\ internal);}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_\_LIBCPUID\_INTERNAL\_H\_\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

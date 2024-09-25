@@ -1,0 +1,16 @@
+
+syntax="proto3";
+
+message brand_info
+{
+    string brand_id = 1;
+    string brand_name = 2;
+}
+
+message brand_info_list {
+    repeated brand_info brands = 1;
+}
+
+message brand_add {
+    brand_info brand = 1;
+}

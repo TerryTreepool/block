@@ -1,0 +1,745 @@
+
+use std::{sync::{Arc, RwLock, atomic::{AtomicBool, Ordering}}, net::{SocketAddr, IpAddr, Ipv4Addr},  };
+use log::{warn, error, info, debug};
+
+use near_base::*;
+use near_util::*;
+
+use crate::{network::{NetManager, MTU},
+            process::{EventManager, provider::{EventTextResult, RoutineEventCache}, },
+            tunnel::{tunnel::State, TunnelEventTrait},
+            package::{Request, RequestDataTrait, MajorCommand, Response, AnyNamedPackage, },
+            RoutineEventTrait,
+            ItfTrait, ItfBuilderTrait, topic::{Topic, }, h::OnTimeTrait, stack_tunnel_event::{ServiceTunnelEvent, RuntimeTunnelEvent},
+    };
+
+use super::{StackOpenParams, StackServiceParams, StackRuntimeParams, StackConfig,
+            process::{ProcessTrait, ProcessEventTrait,
+            },
+            package::{DynamicPackage, },
+            network::{TcpPackageEventTrait, TcpInterface,
+                      UdpPackageEventTrait, UdpInterface,
+            },
+            tunnel::{TunnelManager, DynamicTunnel},
+           };
+
+struct StackComponents {
+    tunnel_manager: TunnelManager,
+    #[allow(unused)]
+    net_manager: NetManager,
+    event_manager: EventManager,
+
+    // tunnel_event
+    tunnel_event: Box<dyn TunnelEventTrait>,
+}
+
+struct StackEvents {
+    // event_handler: Box<dyn ProcessEventTrait>,
+    process_event: Box<dyn ProcessTrait>,
+}
+
+enum StackDevice {
+    Service(StackServiceParams),
+    Runtime(StackRuntimeParams),
+}
+
+enum StackStateImpl {
+    Offline(StateWaiter),
+    Online,
+}
+
+struct StackState {
+    online: AtomicBool,
+    state: RwLock<StackStateImpl>,
+}
+
+impl std::default::Default for StackState {
+    fn default() -> Self {
+        Self {
+            online: AtomicBool::new(false),
+            state: RwLock::new(StackStateImpl::Offline(StateWaiter::new())),
+        }
+    }
+}
+
+impl StackState {
+    pub fn online(&self) {
+        if let Ok(_) = self.online.compare_exchange(false,
+                                                    true,
+                                                    Ordering::SeqCst,
+                                                    Ordering::SeqCst) {
+            let waker = {
+                let state = &mut *self.state.write().unwrap();
+
+                match state {
+                    StackStateImpl::Offline(waiter) => {
+                        let waker = waiter.transfer();
+                        *state = StackStateImpl::Online;
+                        Some(waker)
+                    }
+                    StackStateImpl::Online => None,
+                }
+            };
+
+            if let Some(waker) = waker {
+                waker.wake();
+            }
+        }
+    }
+
+    /// it can stack offline
+    pub fn offline(&self) {
+        if let Ok(_) = self.online.compare_exchange(true,
+                                                    false,
+                                                    Ordering::SeqCst,
+                                                    Ordering::SeqCst) {
+
+            let state = &mut *self.state.write().unwrap();
+            match state {
+                StackStateImpl::Online => {
+                    *state = StackStateImpl::Offline(StateWaiter::new());
+                }
+                _ => { }
+            }
+        }
+    }
+
+    #[inline]
+    pub fn is_online(&self) -> bool {
+        self.online.load(Ordering::SeqCst)
+    }
+
+    pub async fn wait_online(&self) -> bool {
+        if self.online.load(Ordering::SeqCst) {
+            return true;
+        }
+
+        let waiter = {
+            let state = &mut *self.state.write().unwrap();
+            match state {
+                StackStateImpl::Offline(waiter) => {
+                    Some(waiter.new_waiter())
+                }
+                StackStateImpl::Online => None,
+            }
+        };
+
+        if let Some(waiter) = waiter {
+            StateWaiter::wait(waiter, || true).await
+        } else {
+            true
+        }
+    }
+
+}
+
+struct StackImpl {
+    local: StackDevice,
+    local_device_id: ObjectId,
+
+    state: StackState,
+
+    config: StackConfig,
+
+    components: Option<StackComponents>,
+
+    events: StackEvents,
+}
+
+#[derive(Clone)]
+pub struct Stack(Arc<StackImpl>);
+
+impl Stack {
+    pub async fn open_service(stack_device: StackServiceParams, params: StackOpenParams) -> NearResult<Self> {
+        // let mut params = params;
+
+        let process_event = stack_device.service_event.clone_as_process();
+
+        let local_device_id = stack_device.core_service.object_id().clone();
+        let local_endpoints = stack_device.core_service.body().content().endpoints().clone();
+
+        let stack_impl = Arc::new(StackImpl {
+            local: StackDevice::Service(stack_device),
+            local_device_id: local_device_id,
+            state: StackState::default(),
+            config: params.config.unwrap_or(StackConfig::new()),
+            components: None,
+            events: StackEvents {
+                process_event: process_event
+            }
+        });
+        let stack = Self(stack_impl.clone());
+
+        // startup net
+        let net_manager = {
+            // core endpoint
+            let ep = Endpoint::default_tcp(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), CORE_STACK_PORT));
+            let mut v = local_endpoints;
+            v.push(ep);
+
+            NetManager::listen(stack.clone(), v.as_slice()).await
+        }?;
+
+        // startup tunnel
+        let components = StackComponents {
+            tunnel_manager : TunnelManager::open(stack.clone())?,
+            net_manager,
+            event_manager: EventManager::new(),
+            tunnel_event: Box::new(ServiceTunnelEvent::new(stack.clone())),
+        };
+
+        let stack_impl = unsafe { &mut *(Arc::as_ptr(&stack_impl) as *mut StackImpl) };
+        stack_impl.components = Some(components);
+
+        // online
+        stack.online();
+
+        // start
+        stack.start();
+
+        Ok(stack)
+    }
+
+    pub async fn open_runtime(stack_device: StackRuntimeParams, params: StackOpenParams) -> NearResult<Self> {
+        // let mut params = params;
+
+        let process_event = stack_device.runtime_event.clone_as_process();
+
+        let local_device_id = stack_device.local_extention.object_id().clone();
+        let core_device = stack_device.core_service.clone();
+
+        let stack_impl = Arc::new(StackImpl {
+            local: StackDevice::Runtime(stack_device),
+            local_device_id: local_device_id,
+            state: StackState::default(),
+            config: params.config.unwrap_or(StackConfig::new() ),
+            components: None,
+            events: StackEvents {
+                process_event: process_event,
+            }
+        });
+        let stack = Self(stack_impl.clone());
+
+        // startup net
+        let net_manager = {
+            // core endpoint
+            let ep = Endpoint::default_tcp(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), CORE_STACK_PORT));
+
+            NetManager::connect(stack.clone(), ep, core_device).await
+        }?;
+
+        // startup tunnel
+        let components = StackComponents {
+            tunnel_manager : TunnelManager::open(stack.clone())?,
+            net_manager,
+            event_manager: EventManager::new(),
+            tunnel_event: Box::new(RuntimeTunnelEvent::new(stack.clone())),
+        };
+
+        let stack_impl = unsafe { &mut *(Arc::as_ptr(&stack_impl) as *mut StackImpl) };
+        stack_impl.components = Some(components);
+
+        // start
+        stack.start();
+
+        Ok(stack)
+    }
+
+    pub(self) fn start(&self) {
+        let arc_self = self.clone();
+        let polling_interval = arc_self.config().polling_interval;
+
+        async_std::task::spawn(async move {
+            loop {
+                let now = now();
+
+                arc_self.tunnel_manager().on_time_escape(now);
+
+                let _ = async_std::future::timeout(polling_interval, async_std::future::pending::<()>()).await;
+            }
+        });
+    }
+
+    pub fn local_device_id(&self) -> &ObjectId {
+        &self.0.local_device_id
+    }
+
+    pub fn local(&self) -> ObjectGuard {
+        match &self.0.local {
+            StackDevice::Service(params) => ObjectGuard::from(params.core_service.clone()),
+            StackDevice::Runtime(params) => ObjectGuard::from(params.local_extention.clone()),
+        }
+    }
+
+    pub fn core_device(&self) -> &DeviceObject {
+        match &self.0.local {
+            StackDevice::Service(c) => &c.core_service,
+            StackDevice::Runtime(v) => &v.core_service,
+        }
+    }
+
+    pub fn config(&self) -> &StackConfig {
+        &self.0.config
+    }
+
+    #[inline]
+    pub(crate) fn tunnel_manager(&self) -> &TunnelManager {
+        &self.0.components.as_ref().unwrap().tunnel_manager
+    }
+
+    #[inline]
+    #[allow(unused)]
+    pub(crate) fn net_manager(&self) -> &NetManager {
+        &self.0.components.as_ref().unwrap().net_manager
+    }
+
+    #[inline]
+    pub(self) fn event_manager(&self) -> &EventManager {
+        &self.0.components.as_ref().unwrap().event_manager
+    }
+
+    #[inline]
+    pub(self) fn tunnel_event(&self) -> &dyn TunnelEventTrait {
+        self.0.components.as_ref().unwrap().tunnel_event.as_ref()
+    }
+
+    #[inline]
+    pub(self) fn process_event(&self) -> &dyn ProcessTrait {
+        self.0.events.process_event.as_ref()
+    }
+
+    pub fn max_mtu(&self) -> usize {
+        MTU
+    }
+
+    pub(self) fn online(&self) {
+        self.0.state.online();
+    }
+
+    pub(crate) fn offline(&self) {
+        self.0.state.offline()
+    }
+
+    pub fn is_online(&self) -> bool {
+        self.0.state.is_online()
+    }
+
+    pub async fn wait_online(&self) -> bool {
+        self.0.state.wait_online().await
+    }
+}
+
+impl Stack {
+    pub fn post_message_with_builder<BUILD>(&self,
+                                            target: Option<ObjectId>,
+                                            topic: &Topic,
+                                            builder: BUILD,
+                                            callback: Option<Box<dyn RoutineEventTrait>>) -> NearResult<()>
+    where BUILD: ItfBuilderTrait, {
+        let b: Vec<BUILD::R> = builder.build();
+        let arc_self = self.clone();
+
+        struct EventWrapper(Arc<Box<dyn RoutineEventTrait>>);
+
+        #[async_trait::async_trait]
+        impl RoutineEventTrait for EventWrapper {
+            async fn emit(&self, sender: &ObjectId, data: &[u8]) -> NearResult<EventTextResult> {
+                self.0.emit(sender, data).await
+            }
+        }
+
+        if let Some(cb) = callback {
+            let arc_cb = Arc::new(cb);
+
+            for it in b {
+                if let Err(err) = arc_self.post_message(target.clone(),
+                                                                   topic.clone(),
+                                                                   it,
+                                                                   Some(Box::new(EventWrapper(arc_cb.clone())))) {
+                    return Err(err);
+                }
+            }
+        } else {
+            for it in b {
+                if let Err(err) = arc_self.post_message(target.clone(),
+                                                                   topic.clone(),
+                                                                   it,
+                                                                   None) {
+                    return Err(err);
+                }
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn post_message<B: ItfTrait>(&self,
+                                     target: Option<ObjectId>,
+                                     topic: Topic,
+                                     body: B,
+                                     callback: Option<Box<dyn RoutineEventTrait>>) -> NearResult<()> {
+
+        let data = {
+            let mut data = vec![0u8; body.raw_capacity()];
+            body.serialize(data.as_mut_slice())?;
+            data
+        };
+
+        let target = if let Some(target) = target {
+            target
+        } else {
+            self.core_device().object_id().clone()
+        };
+
+        let my = self.clone();
+
+        async_std::task::spawn(async move {
+            let topic_str = topic.topic();
+            let my_clone = my.clone();
+            let data_len = data.len();
+
+            match my.tunnel_manager()
+                    .post_message(&target,
+                                  Some(topic_str.clone()),
+                                  AnyNamedPackage::with_request(Request::new(my.local_device_id().clone(), data)),
+                                  move | sequence, _package_dataset | {
+
+                                      let local_id = my_clone.local_device_id().clone();
+
+                                      if let Some(cb) = callback {
+                                          let _ = my_clone.event_manager().join_routine(target, sequence.into_value(), RoutineEventCache::from((local_id, cb)));
+                                      }
+                                  }
+                    )
+                    .await {
+                Ok(()) => {
+                    info!("Succeeded post message topic = {}, size = {}", topic, data_len);
+                }
+                Err(e) => {
+                    error!("Failed to post message topic = {} with err {}", topic, e);
+                }
+            }
+        });
+
+        Ok(())
+    }
+
+}
+
+impl TcpPackageEventTrait for Stack {
+    fn on_connected(&self, interface: TcpInterface, remote: &DeviceObject) {
+        self.tunnel_manager().on_connected(interface, remote);
+
+        match &self.0.local {
+            StackDevice::Runtime(runtime) => {
+                // if it's core
+                if runtime.core_service.object_id() == remote.object_id() {
+                    // wait core active
+                    let arc_self = self.clone();
+                    let remote_id = remote.object_id().clone();
+                    async_std::task::spawn(async move {
+                        match arc_self.tunnel_manager().wait_tunnel_active(&remote_id).await {
+                            State::Established(()) => {
+                                arc_self.online();
+                            }
+                            _ => {
+                                unreachable!()
+                            }
+                        }
+                    });
+                }
+            }
+            _ => {}
+        }
+    }
+
+    fn on_tcp_package(&self, interface: TcpInterface, package: DynamicPackage) -> NearResult<()> {
+        self.tunnel_manager().on_tcp_package(interface, package)
+    }
+
+}
+
+impl UdpPackageEventTrait<Endpoint> for Stack {
+    fn on_udp_package(&self, interface: UdpInterface, package: DynamicPackage, remote: Endpoint) -> NearResult<()> {
+        self.tunnel_manager().on_udp_package(interface, package, remote)
+    }
+}
+
+#[async_trait::async_trait]
+impl ProcessEventTrait for Stack {
+    async fn on_package_event(&self,
+                              tunnel: DynamicTunnel,
+                              from: ObjectId,
+                              to: Option<ObjectId>,
+                              topic: String,
+                              sequence: u32,
+                              request: Box<dyn RequestDataTrait>) -> NearResult<()> {
+        match request.major_command() {
+            MajorCommand::Request => {
+                self.on_request_process(tunnel, from, to, topic, sequence, request).await
+            }
+            MajorCommand::Response => {
+                self.on_response_process(tunnel, from, to, topic, sequence, request).await
+            }
+            _ => { unreachable!() }
+        }
+        // let (sender, routine) = match self.event_manager().take_routine(from.clone(), sequence) {
+        //     Some((sender, routine)) => {
+        //         assert_eq!(sender, request.sender());
+        //         Ok((sender, routine))
+        //     }
+        //     None => {
+        //         let sender = request.sender;
+
+        //         self.process_event().create_routine(&sender, &topic_ref)
+        //             .map(| routine | {
+        //                 (sender, Some(routine))
+        //             })
+        //             .map_err(| err | {
+        //                 warn!("failed to create_routine() with err {}", err);
+        //                 err
+        //             })
+        //     }
+        // }?;
+
+        // let routine =
+        //     routine.ok_or_else(|| {
+        //         warn!("not found routine, from: {}, sender: {}, topic: {}, sequest: {}", from, sender, topic, sequence);
+        //         NearError::new(ErrorCode::NEAR_ERROR_NOTFOUND, "not found routine")
+        //     })?;
+
+        // let r =
+        //     routine.emit(&from, request.data.as_slice())
+        //         .await
+        //         .map_err(| err | {
+        //             error!("failed to on_route() with err {}, at from: {}, sender: {}, topic: {}, sequest: {}",
+        //                 err, from, sender, topic, sequence);
+        //             err
+        //         })?;
+
+        // match r {
+        //     EventTextResult::Response(data) => {
+        //         self.tunnel_manager()
+        //             .send_message(tunnel,
+        //                           Some(topic.into()),
+        //                           Request { sender: sender, data: data.data, },
+        //                           | _, _ | {})
+        //             .await
+        //     }
+        //     EventTextResult::Transfer(data) => {
+        //         let arc_self = self.clone();
+        //         let (to, topic, data, callback) = data.split();
+
+        //         self.tunnel_manager()
+        //             .post_message(&to,
+        //                           Some(topic),
+        //                           Request { sender, data },
+        //                           move| sequence, _package_dataset | {
+        //                             let local_id = arc_self.local_device_id().clone();
+        //                             let routine = RoutineEventCache::from((local_id.clone(), callback));
+        //                             let _ = arc_self.event_manager().join_routine(to, sequence.into_value(), routine);
+        //                           })
+        //             .await
+        //     }
+        //     _ => { /* Ingnore */ Ok(()) }
+        // }
+    }
+}
+
+impl Stack {
+    pub(self) async fn on_request_process(&self,
+                                          tunnel: DynamicTunnel,
+                                          from: ObjectId,
+                                          to: Option<ObjectId>,
+                                          topic: String,
+                                          sequence: u32,
+                                          request: Box<dyn RequestDataTrait>) -> NearResult<()> {
+        let topic = Topic::from(topic);
+        let topic_ref = topic.topic_d()?;
+
+        debug!("request: topic={} from={} to={:?} request=[{}] begin...", topic_ref, from, to, request);
+
+        let sender = request.sender().unwrap();
+
+        let routine =
+            self.process_event()
+                .create_routine(sender, &topic_ref)
+                .map(| routine | {
+                    routine
+                })
+                .map_err(| err | {
+                    warn!("failed to create_routine() with err {}", err);
+                    err
+                })?;
+
+        let r =
+            routine.emit(&from, request.data().unwrap())
+                .await
+                .map_err(| err | {
+                    error!("failed to on_route() with err {}, at from: {}, sender: {}, topic: {}, sequest: {}",
+                        err, from, sender, topic_ref, sequence);
+                    err
+                })?;
+
+        match r {
+            EventTextResult::Response(data) => {
+                self.tunnel_manager()
+                    .send_message(tunnel,
+                                  Some(topic.into()),
+                                  AnyNamedPackage::with_response(Response::new(sender.clone(), data.data)),
+                                  | _, _ | {})
+                    .await
+            }
+            EventTextResult::Transfer(data) => {
+                let arc_self = self.clone();
+                let (to, topic, data, callback) = data.split();
+
+                self.tunnel_manager()
+                    .post_message(&to,
+                                  Some(topic),
+                                  AnyNamedPackage::with_request(Request::new(sender.clone(), data)),
+                                  move| sequence, _package_dataset | {
+                                    let local_id = arc_self.local_device_id().clone();
+                                    let routine = RoutineEventCache::from((local_id.clone(), callback));
+                                    let _ = arc_self.event_manager().join_routine(to, sequence.into_value(), routine);
+                                  })
+                    .await
+            }
+            _ => { /* Ingnore */ Ok(()) }
+        }
+    }
+
+    pub(self) async fn on_response_process(&self,
+                                           _tunnel: DynamicTunnel,
+                                           from: ObjectId,
+                                           to: Option<ObjectId>,
+                                           topic: String,
+                                           sequence: u32,
+                                           request: Box<dyn RequestDataTrait>) -> NearResult<()> {
+        let topic = Topic::from(topic);
+        let topic_ref = topic.topic_d()?;
+
+        debug!("response: topic={} from={} to={:?} request=[{}] begin...", topic_ref, from, to, request);
+
+        let sender = request.sender().unwrap();
+
+        let routine =
+            match self.event_manager().take_routine(from.clone(), sequence) {
+            Some((_, routine)) => {
+                Ok(routine)
+            }
+            None => {
+                warn!("not found routine, from: {}, sender: {}, topic: {}, sequence: {}", from, sender, topic, sequence);
+                Err(NearError::new(ErrorCode::NEAR_ERROR_NOTFOUND, "not found routine"))
+            }
+        }?;
+
+        let r =
+            routine.emit(&from, request.data().unwrap())
+                .await
+                .map_err(| err | {
+                    error!("failed to on_route() with err {}, at from: {}, sender: {}, topic: {}, sequest: {}",
+                        err, from, sender, topic, sequence);
+                    err
+                })?;
+
+        match r {
+            // EventTextResult::Response(data) => {
+            //     self.tunnel_manager()
+            //         .send_message(tunnel,
+            //                       Some(topic.into()),
+            //                       Request { sender: sender, data: data.data, },
+            //                       | _, _ | {})
+            //         .await
+            // }
+            EventTextResult::Transfer(data) => {
+                let arc_self = self.clone();
+                let (to, topic, data, callback) = data.split();
+
+                self.tunnel_manager()
+                    .post_message(&to,
+                                  Some(topic),
+                                  AnyNamedPackage::Request(Request::new(from, data)),
+                                  move| sequence, _package_dataset | {
+                                    let local_id = arc_self.local_device_id().clone();
+                                    let routine = RoutineEventCache::from((local_id.clone(), callback));
+                                    let _ = arc_self.event_manager().join_routine(to, sequence.into_value(), routine);
+                                  })
+                    .await
+            }
+            _ => { /* Ingnore */ Ok(()) }
+        }
+
+        // let (sender, routine) = match self.event_manager().take_routine(from.clone(), sequence) {
+        //     Some((sender, routine)) => {
+        //         assert_eq!(sender, request.sender());
+        //         Ok((sender, routine))
+        //     }
+        //     None => {
+        //         let sender = request.sender;
+
+        //         self.process_event().create_routine(&sender, &topic_ref)
+        //             .map(| routine | {
+        //                 (sender, Some(routine))
+        //             })
+        //             .map_err(| err | {
+        //                 warn!("failed to create_routine() with err {}", err);
+        //                 err
+        //             })
+        //     }
+        // }?;
+
+        // let routine =
+        //     routine.ok_or_else(|| {
+        //         warn!("not found routine, from: {}, sender: {}, topic: {}, sequest: {}", from, sender, topic, sequence);
+        //         NearError::new(ErrorCode::NEAR_ERROR_NOTFOUND, "not found routine")
+        //     })?;
+
+        // let r =
+        //     routine.emit(&from, request.data.as_slice())
+        //         .await
+        //         .map_err(| err | {
+        //             error!("failed to on_route() with err {}, at from: {}, sender: {}, topic: {}, sequest: {}",
+        //                 err, from, sender, topic, sequence);
+        //             err
+        //         })?;
+
+        // match r {
+        //     EventTextResult::Response(data) => {
+        //         self.tunnel_manager()
+        //             .send_message(tunnel,
+        //                           Some(topic.into()),
+        //                           Request { sender: sender, data: data.data, },
+        //                           | _, _ | {})
+        //             .await
+        //     }
+        //     EventTextResult::Transfer(data) => {
+        //         let arc_self = self.clone();
+        //         let (to, topic, data, callback) = data.split();
+
+        //         self.tunnel_manager()
+        //             .post_message(&to,
+        //                           Some(topic),
+        //                           Request { sender, data },
+        //                           move| sequence, _package_dataset | {
+        //                             let local_id = arc_self.local_device_id().clone();
+        //                             let routine = RoutineEventCache::from((local_id.clone(), callback));
+        //                             let _ = arc_self.event_manager().join_routine(to, sequence.into_value(), routine);
+        //                           })
+        //             .await
+        //     }
+        //     _ => { /* Ingnore */ Ok(()) }
+        // }
+    }
+}
+
+#[async_trait::async_trait]
+impl TunnelEventTrait for Stack {
+    async fn on_lack(&self, target: &ObjectId) {
+        self.tunnel_event().on_lack(target).await
+    }
+
+    async fn on_closed(&self, target: &ObjectId, ) {
+        self.tunnel_event().on_closed(target).await
+    }
+}

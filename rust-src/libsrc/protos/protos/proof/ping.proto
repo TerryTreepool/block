@@ -1,0 +1,28 @@
+
+syntax = "proto3";
+
+message proof_of_ping
+{
+    uint64 send_time = 1;
+    uint64 ping_sequence = 2;
+    bytes key = 6;
+    string contract_id = 7;
+    string nonce = 11;
+}
+
+message proof_of_ping_resp {
+    uint64 ping_sequence = 1;
+    string local_endpoint = 2;
+    string remote_endpoint = 3;
+}
+
+message proof_of_device {
+    uint64 send_time = 1;
+    uint64 ping_sequence = 2;
+    string nonce = 11;
+
+}
+
+message proof_of_device_resp {
+    uint64 ping_sequence = 1;
+}

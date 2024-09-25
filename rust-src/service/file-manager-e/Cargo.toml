@@ -1,0 +1,23 @@
+[package]
+name = "file-manager-e"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = { workspace = true }
+near-base = { path = "../../common/near-base" }
+near-core = { path = "../../common/near-core" }
+near-transport = { path = "../../common/near-transport" }
+near-util = { path = "../../common/near-util" }
+base = { path = "../../libsrc/base" }
+nds = { path = "../../libsrc/nds" }
+async-std = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+tide = "0.16"
+serde = "1.0"
+serde_json = "1.0"
+once_cell = { workspace = true }
+lazy_static = { workspace = true }

@@ -1,0 +1,16 @@
+[package]
+name = "desc-tool"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+near-base = { path = "../../common/near-base" }
+near-core = { path = "../../common/near-core" }
+near-util = { path = "../../common/near-util" }
+
+clap = { workspace = true }
+lazy_static = { workspace = true }
+hex = { workspace = true }
+enumflags2 = { workspace = true }

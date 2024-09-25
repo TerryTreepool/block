@@ -1,0 +1,39 @@
+[package]
+name = "near-util"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# sha2 = { path = "../../3rd-party/sha2" }
+log = { workspace = true }
+near-base = { path = "../near-base" }
+near-core = { path = "../near-core" }
+async-std = { workspace = true }
+async-trait = { workspace = true }
+lazy_static = { workspace = true }
+libc = { workspace = true }
+sha2 = { workspace = true }
+
+chrono = "0.4.24"
+
+c_linked_list = "1.1.1"
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = '0.3.6', features = [
+    'psapi',
+    'shellapi',
+    'mswsock',
+    'ws2ipdef',
+] }
+
+[lib]
+# 库名， 默认项目名称
+#name = "test"
+
+# 构建目标
+# dylib -> 动态库
+# rlib -> r库
+# staticlib -> 静态库
+crate-type = ["rlib"]

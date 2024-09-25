@@ -1,0 +1,104 @@
+
+use uuid::{Uuid};
+use generic_array::{GenericArray, typenum::{U16, Unsigned}};
+
+use crate::{codec::{Serialize, Deserialize}, errors::*, };
+
+#[derive(Clone)]
+pub struct UniqueId(GenericArray<u8, U16>);
+
+impl UniqueId {
+    pub fn generate() -> Self {
+        Self(GenericArray::clone_from_slice(Uuid::new_v5(&Uuid::NAMESPACE_DNS, b"").as_bytes()))
+    }
+
+    pub fn generate_withdata(data: &[u8]) -> Self {
+        Self(GenericArray::clone_from_slice(Uuid::new_v5(&Uuid::NAMESPACE_DNS, data).as_bytes()))
+    }
+
+    pub fn len() -> usize {
+        U16::to_usize()
+    }
+}
+
+impl AsMut<[u8]> for UniqueId {
+    fn as_mut(&mut self) -> &mut [u8] {
+        self.0.as_mut_slice()
+    }
+
+}
+
+impl AsRef<[u8]> for UniqueId {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_slice()
+    }
+}
+
+impl From<[u8; 16]> for UniqueId {
+    fn from(buf: [u8; 16]) -> Self {
+        Self(
+            GenericArray::clone_from_slice(&buf)
+        )
+    }
+
+}
+
+impl From<GenericArray<u8, U16>> for UniqueId {
+    fn from(id: GenericArray<u8, U16>) -> Self {
+        Self(id)
+    }
+
+}
+
+impl std::cmp::PartialEq<UniqueId> for UniqueId {
+    fn eq(&self, other: &UniqueId) -> bool {
+        self.0 == other.0
+    }
+
+}
+
+impl std::fmt::Debug for UniqueId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "UniqueId")
+    }
+
+}
+
+impl Serialize for UniqueId {
+    fn raw_capacity(&self) -> usize {
+        self.0.raw_capacity()
+    }
+
+    fn serialize<'a>(&self, buf: &'a mut [u8]) -> NearResult<&'a mut [u8]> {
+        self.0.serialize(buf)
+    }
+
+}
+
+impl Deserialize for UniqueId {
+    fn deserialize<'de>(buf: &'de [u8]) -> NearResult<(Self, &'de [u8])> {
+        let (val, buf) = GenericArray::<u8, U16>::deserialize(buf)?;
+
+        Ok((Self(val), buf))
+    }
+
+}
+
+#[cfg(test)]
+mod test {
+    use crate::components::*;
+    use crate::codec::*;
+
+    #[test]
+    fn test() {
+        let id = UniqueId::from([1u8,1u8,3,4,5,6,7,8,9,0,1,23,34,4,5,6]);
+
+        let mut buf = [0u8; 1024];
+
+        let end = id.serialize(&mut buf).unwrap();
+        let len = 1024 - end.len();
+
+        println!("{}", len);
+
+    }
+}

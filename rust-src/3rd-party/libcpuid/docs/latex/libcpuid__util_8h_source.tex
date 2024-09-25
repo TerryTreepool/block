@@ -1,0 +1,142 @@
+\doxysection{libcpuid\+\_\+util.\+h}
+\label{libcpuid__util_8h_source}\index{libcpuid/libcpuid\_util.h@{libcpuid/libcpuid\_util.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ 2008\ \ Veselin\ Georgiev,}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ anrieffNOSPAM\ @\ mgail\_DOT.com\ (convert\ to\ gmail)}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ are\ met:}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ 1.\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ 2.\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above\ copyright}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ \ \ \ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer\ in\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ \ \ \ documentation\ and/or\ other\ materials\ provided\ with\ the\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ AUTHOR\ \`{}\`{}AS\ IS''\ AND\ ANY\ EXPRESS\ OR}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ IN\ NO\ EVENT\ SHALL\ THE\ AUTHOR\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ INCIDENTAL,\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ NOT\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE\ OF}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#ifndef\ \_\_LIBCPUID\_UTIL\_H\_\_}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#define\ \_\_LIBCPUID\_UTIL\_H\_\_}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ "{}libcpuid\_internal.h"{}}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ COUNT\_OF(array)\ (sizeof(array)\ /\ sizeof(array[0]))}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{struct\ }feature\_map\_t\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ bit;}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ cpu\_feature\_t\ feature;}
+\DoxyCodeLine{00036\ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keywordtype}{void}\ match\_features(\textcolor{keyword}{const}\ \textcolor{keyword}{struct}\ feature\_map\_t*\ matchtable,\ \textcolor{keywordtype}{int}\ count,}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ reg,\ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }match\_entry\_t\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ family,\ model,\ stepping,\ ext\_family,\ ext\_model;}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ ncores,\ l2cache,\ l3cache,\ brand\_code;}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ uint64\_t\ model\_bits;}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ model\_code;}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ name[CODENAME\_STR\_MAX];}
+\DoxyCodeLine{00047\ \};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ returns\ the\ match\ score:}}
+\DoxyCodeLine{00050\ \textcolor{keywordtype}{int}\ match\_cpu\_codename(\textcolor{keyword}{const}\ \textcolor{keyword}{struct}\ match\_entry\_t*\ matchtable,\ \textcolor{keywordtype}{int}\ count,}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data,\ \textcolor{keywordtype}{int}\ brand\_code,\ uint64\_t\ bits,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ model\_code);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keywordtype}{void}\ warnf(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ format,\ ...)}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#ifdef\ \_\_GNUC\_\_}}
+\DoxyCodeLine{00056\ \_\_attribute\_\_((format(printf,\ 1,\ 2)))}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00058\ ;}
+\DoxyCodeLine{00059\ \textcolor{keywordtype}{void}\ debugf(\textcolor{keywordtype}{int}\ verboselevel,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ format,\ ...)}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#ifdef\ \_\_GNUC\_\_}}
+\DoxyCodeLine{00061\ \_\_attribute\_\_((format(printf,\ 2,\ 3)))}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00063\ ;}
+\DoxyCodeLine{00064\ \textcolor{keywordtype}{void}\ generic\_get\_cpu\_list(\textcolor{keyword}{const}\ \textcolor{keyword}{struct}\ match\_entry\_t*\ matchtable,\ \textcolor{keywordtype}{int}\ count,}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct}\ cpu\_list\_t*\ list);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00068\ \textcolor{comment}{\ *\ Seek\ for\ a\ pattern\ in\ \`{}haystack'.}}
+\DoxyCodeLine{00069\ \textcolor{comment}{\ *\ Pattern\ may\ be\ an\ fixed\ string,\ or\ contain\ the\ special\ metacharacters}}
+\DoxyCodeLine{00070\ \textcolor{comment}{\ *\ '.'\ -\/\ match\ any\ single\ character}}
+\DoxyCodeLine{00071\ \textcolor{comment}{\ *\ '\#'\ -\/\ match\ any\ digit}}
+\DoxyCodeLine{00072\ \textcolor{comment}{\ *\ '[<chars>]\ -\/\ match\ any\ of\ the\ given\ chars\ (regex-\/like\ ranges\ are\ not}}
+\DoxyCodeLine{00073\ \textcolor{comment}{\ *\ \ \ \ \ \ \ \ \ \ \ \ \ \ supported)}}
+\DoxyCodeLine{00074\ \textcolor{comment}{\ *\ Return\ val:\ 0\ if\ the\ pattern\ is\ not\ found.\ Nonzero\ if\ it\ is\ found\ (actually,}}
+\DoxyCodeLine{00075\ \textcolor{comment}{\ *\ \ \ \ \ \ \ \ \ \ \ \ \ x\ +\ 1\ where\ x\ is\ the\ index\ where\ the\ match\ is\ found).}}
+\DoxyCodeLine{00076\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00077\ \textcolor{keywordtype}{int}\ match\_pattern(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ haystack,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ pattern);}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00080\ \textcolor{comment}{\ *\ Gets\ an\ initialized\ cpu\_id\_t.\ It\ is\ cached,\ so\ that\ internal\ libcpuid}}
+\DoxyCodeLine{00081\ \textcolor{comment}{\ *\ machinery\ doesn't\ need\ to\ issue\ cpu\_identify\ more\ than\ once.}}
+\DoxyCodeLine{00082\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00083\ \textcolor{keyword}{struct\ }cpu\_id\_t*\ get\_cached\_cpuid(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{comment}{/*\ returns\ true\ if\ all\ bits\ of\ mask\ are\ present\ in\ \`{}bits'.\ */}}
+\DoxyCodeLine{00087\ \textcolor{keywordtype}{int}\ match\_all(uint64\_t\ bits,\ uint64\_t\ mask);}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{comment}{/*\ print\ what\ bits\ a\ mask\ consists\ of\ */}}
+\DoxyCodeLine{00090\ \textcolor{keywordtype}{void}\ debug\_print\_lbits(\textcolor{keywordtype}{int}\ debuglevel,\ uint64\_t\ mask);}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00093\ \textcolor{comment}{\ *\ Sets\ the\ current\ errno}}
+\DoxyCodeLine{00094\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00095\ \textcolor{keywordtype}{int}\ cpuid\_set\_error(cpu\_error\_t\ err);}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00098\ \textcolor{comment}{\ *\ Gets\ the\ current\ errno}}
+\DoxyCodeLine{00099\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00100\ \textcolor{keywordtype}{int}\ cpuid\_get\_error(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{extern}\ libcpuid\_warn\_fn\_t\ \_warn\_fun;}
+\DoxyCodeLine{00103\ \textcolor{keyword}{extern}\ \textcolor{keywordtype}{int}\ \_current\_verboselevel;}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00106\ \textcolor{comment}{\ *\ Manage\ cpu\_affinity\_mask\_t\ type}}
+\DoxyCodeLine{00107\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \textcolor{comment}{/*\ initialize\ affinity\_mask\ */}}
+\DoxyCodeLine{00110\ \textcolor{keywordtype}{void}\ init\_affinity\_mask(cpu\_affinity\_mask\_t\ *affinity\_mask);}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{comment}{/*\ copy\ one\ affinity\_mask\ to\ another\ one\ */}}
+\DoxyCodeLine{00113\ \textcolor{keywordtype}{void}\ copy\_affinity\_mask(cpu\_affinity\_mask\_t\ *dest\_affinity\_mask,\ cpu\_affinity\_mask\_t\ *src\_affinity\_mask);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{comment}{/*\ set\ bit\ corresponding\ to\ 'logical\_cpu'\ to\ '1'\ */}}
+\DoxyCodeLine{00116\ \textcolor{keywordtype}{void}\ set\_affinity\_mask\_bit(logical\_cpu\_t\ logical\_cpu,\ cpu\_affinity\_mask\_t\ *affinity\_mask);}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{comment}{/*\ get\ bit\ corresponding\ to\ 'logical\_cpu'\ */}}
+\DoxyCodeLine{00119\ \textcolor{keywordtype}{bool}\ get\_affinity\_mask\_bit(logical\_cpu\_t\ logical\_cpu,\ cpu\_affinity\_mask\_t\ *affinity\_mask);}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{comment}{/*\ set\ bit\ corresponding\ to\ 'logical\_cpu'\ to\ '0'\ */}}
+\DoxyCodeLine{00122\ \textcolor{keywordtype}{void}\ clear\_affinity\_mask\_bit(logical\_cpu\_t\ logical\_cpu,\ cpu\_affinity\_mask\_t\ *affinity\_mask);}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{comment}{/*\ assign\ cache\ values\ in\ cpu\_id\_t\ type\ */}}
+\DoxyCodeLine{00125\ \textcolor{keywordtype}{void}\ assign\_cache\_data(uint8\_t\ on,\ cache\_type\_t\ cache,\ \textcolor{keywordtype}{int}\ size,\ \textcolor{keywordtype}{int}\ assoc,\ \textcolor{keywordtype}{int}\ linesize,\ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data);}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \textcolor{comment}{/*\ generic\ way\ to\ retrieve\ core\ count\ for\ x86\ CPUs\ */}}
+\DoxyCodeLine{00128\ \textcolor{keywordtype}{void}\ decode\_number\_of\_cores\_x86(\textcolor{keyword}{struct}\ cpu\_raw\_data\_t*\ raw,\ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data);}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{comment}{/*\ generic\ way\ to\ retrieve\ cache\ topology\ for\ x86\ CPUs\ */}}
+\DoxyCodeLine{00131\ \textcolor{keywordtype}{void}\ decode\_deterministic\_cache\_info\_x86(uint32\_t\ cache\_regs[][NUM\_REGS],}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint8\_t\ subleaf\_count,}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct}\ cpu\_id\_t*\ data,}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct}\ internal\_id\_info\_t*\ internal);}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_\_LIBCPUID\_UTIL\_H\_\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

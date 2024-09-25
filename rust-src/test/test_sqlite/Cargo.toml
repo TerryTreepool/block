@@ -1,0 +1,15 @@
+[package]
+name = "test_sqlite"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dataagent-util = { path = "../../libsrc/dataagent-util" }
+protos = { path = "../../libsrc/protos" }
+
+async-std = { workspace = true }
+futures = { workspace = true }
+
+rand = "*"

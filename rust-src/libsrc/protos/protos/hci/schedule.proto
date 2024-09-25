@@ -1,0 +1,93 @@
+
+syntax="proto3";
+
+enum schedule_mode {
+    None = 0;
+    Maual = 1;
+    TimePeriod = 2;
+    Condition = 3;  // ingore
+}
+
+message schedule_info {
+
+    string schedule_id = 1;
+    string schedule_name = 2;
+    repeated schedule_relation_info thing_relation = 3;
+    uint32 schedule_img_idx = 4;
+    uint32 status = 5;
+
+    schedule_mode mode = 6;
+
+    schedule_timeperiod_mode timeperiod_mode = 7;
+    schedule_condition_mode condition_mode = 8;
+}
+
+
+message schedule_cycle_time {
+    uint32 hour = 1;
+    uint32 minute = 2;
+}
+
+message schedule_timeperiod_mode {
+
+    schedule_cycle_time time = 1;
+
+    enum schedule_cycle_week {
+        Zero = 0x00;
+        Mon = 0x01;
+        Tues = 0x02;
+        Wed = 0x04;
+        Thur = 0x08;
+        Fri = 0x10;
+        Sat = 0x20;
+        Sun = 0x40;
+    }
+
+    uint32 cycle = 2;    // schedule_cycle_week
+}
+
+message schedule_condition_mode {
+
+}
+
+message schedule_relation_info {
+    string thing_id = 1;
+
+    map<string, string> thing_data_property = 6;
+}
+
+message schedule_relation_list {
+    repeated schedule_relation_info thing_relation = 1;
+}
+
+message schedule_relation_list_update {
+    enum schedule_relation_list_op {
+        none = 0;
+        update = 1;
+        remove = 2;
+    }
+    string schedule_id = 1;
+    schedule_relation_list_op op = 2;
+    schedule_relation_list relations = 3;
+}
+
+message schedule_list {
+    repeated schedule_info schedules = 1;
+}
+
+message schedule_add {
+    string schedule_name = 1;
+    repeated schedule_relation_info thing_relation = 2;
+    uint32 schedule_img_idx = 3;
+    schedule_mode mode = 4;
+}
+
+message thing_insert_group {
+    string schedule_id = 1;
+    repeated schedule_relation_info thing_relation = 2;
+}
+
+message thing_remove_group {
+    string schedule_id = 1;
+    repeated string thing_id = 2;
+}

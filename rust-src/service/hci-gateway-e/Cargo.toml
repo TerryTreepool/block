@@ -1,0 +1,21 @@
+[package]
+name = "hci-gateway-e"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+near-base = { path = "../../common/near-base" }
+near-core = { path = "../../common/near-core" }
+near-transport = { path = "../../common/near-transport" }
+near-util = { path = "../../common/near-util" }
+base = { path = "../../libsrc/base" }
+common = { path = "../../libsrc/common" }
+topic-util = { path = "../../libsrc/topic-util" }
+protos = { path = "../../libsrc/protos" }
+
+log = { workspace = true }
+async-std = { workspace = true }
+async-trait = { workspace = true }
+bytes = { workspace = true }

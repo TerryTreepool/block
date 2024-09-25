@@ -1,0 +1,48 @@
+.TH "cpu_raw_data_array_t" 3libcpuid" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+cpu_raw_data_array_t \- Contains an array of raw CPUID data\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <libcpuid\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "bool \fBwith_affinity\fP"
+.br
+.ti -1c
+.RI "logical_cpu_t \fBnum_raw\fP"
+.br
+.ti -1c
+.RI "struct \fBcpu_raw_data_t\fP * \fBraw\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains an array of raw CPUID data\&. 
+
+This contains one \fBcpu_raw_data_t\fP for each logical CPU\&.
+.PP
+\fBNote\fP
+.RS 4
+There is a hard limit of raw array: it is bounded by the logical_cpu_t type\&. In other words, the limit is 65536 logical CPUs in the system\&. 
+.RE
+.PP
+
+.SH "Field Documentation"
+.PP 
+.SS "logical_cpu_t cpu_raw_data_array_t::num_raw"
+\fBraw\fP length 
+.SS "struct \fBcpu_raw_data_t\fP* cpu_raw_data_array_t::raw"
+array of raw CPUID data 
+.SS "bool cpu_raw_data_array_t::with_affinity"
+Indicates if \fBraw\fP was obtained by using CPU affinity if false, \fBraw\fP contains a single data from an old dump (versions 0\&.5\&.1 and below)\&. if true, \fBraw\fP contains data from a new dump (versions 0\&.6\&.0 and above)\&. if true and if \fBnum_raw\fP is 1, it indicates only one logical core was detected on the system\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for libcpuid from the source code\&.

@@ -1,0 +1,31 @@
+
+syntax="proto3";
+
+message thing_info {
+    string brand_id = 1;
+    string major_product_id = 2;
+    string minor_product_id = 3;
+    string thing_id = 4;
+    string thing_name = 5;
+
+    string mac_address = 6;
+}
+
+message thing_info_list {
+    repeated thing_info things = 1;
+}
+
+message thing_add {
+    thing_info thing = 1;
+    map<string, string> thing_data = 2;
+}
+
+message thing_query {
+    string thing_id = 1;
+    string thing_mac = 2;
+}
+
+message thing_query_all {
+    string brand_id = 1;
+    string product_id = 2;
+}

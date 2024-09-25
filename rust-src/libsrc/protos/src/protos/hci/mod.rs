@@ -1,0 +1,37 @@
+// @by near generated
+use crate::inner_impl_default_protobuf_raw_codec;
+
+pub mod brand;
+inner_impl_default_protobuf_raw_codec!(brand::Brand_info);
+inner_impl_default_protobuf_raw_codec!(brand::Brand_info_list);
+inner_impl_default_protobuf_raw_codec!(brand::Brand_add);
+pub mod hci_thing;
+inner_impl_default_protobuf_raw_codec!(hci_thing::Hci_thing);
+inner_impl_default_protobuf_raw_codec!(hci_thing::Hci_thing_list);
+inner_impl_default_protobuf_raw_codec!(hci_thing::Hci_add_thing);
+inner_impl_default_protobuf_raw_codec!(hci_thing::Hci_ctrl_thing);
+inner_impl_default_protobuf_raw_codec!(hci_thing::Hci_crud_thing);
+inner_impl_default_protobuf_raw_codec!(hci_thing::Hci_task_result);
+pub mod product;
+inner_impl_default_protobuf_raw_codec!(product::Product_info);
+inner_impl_default_protobuf_raw_codec!(product::Product_info_list);
+inner_impl_default_protobuf_raw_codec!(product::Product_add);
+inner_impl_default_protobuf_raw_codec!(product::Product_query_all);
+pub mod schedule;
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_info);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_cycle_time);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_timeperiod_mode);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_condition_mode);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_relation_info);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_relation_list);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_relation_list_update);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_list);
+inner_impl_default_protobuf_raw_codec!(schedule::Schedule_add);
+inner_impl_default_protobuf_raw_codec!(schedule::Thing_insert_group);
+inner_impl_default_protobuf_raw_codec!(schedule::Thing_remove_group);
+pub mod thing;
+inner_impl_default_protobuf_raw_codec!(thing::Thing_info);
+inner_impl_default_protobuf_raw_codec!(thing::Thing_info_list);
+inner_impl_default_protobuf_raw_codec!(thing::Thing_add);
+inner_impl_default_protobuf_raw_codec!(thing::Thing_query);
+inner_impl_default_protobuf_raw_codec!(thing::Thing_query_all);
