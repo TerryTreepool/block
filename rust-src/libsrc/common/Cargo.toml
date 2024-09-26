@@ -28,6 +28,6 @@ winapi = { workspace = true, features = ["errhandlingapi"] }
 named-lock = '0.2.0'
 fs2 = '0.4'
 
-[target.'cfg(any(target_os="linux", target_os="android", target_os="ios"))'.dependencies]
+[target.'cfg(any(target_os="linux", target_os="android", target_os="ios", target_os="macos"))'.dependencies]
 nix = { version = "0.26.2", features = ["signal"] }
 fork = "0.1.22"
